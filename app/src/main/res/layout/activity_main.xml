@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
     <TabHost
         android:id="@+id/tbhMetros"
         android:layout_width="match_parent"
@@ -27,89 +26,67 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <!-- Tab Metros -->
                 <RelativeLayout
                     android:id="@+id/tabMetros"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
+
                     <EditText
                         android:id="@+id/txtMetrosCantidad"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="120dp"
-                        android:hint="Cantidad a convertir"/>
+                        android:layout_marginTop="50dp"
+                        android:hint="Cantidad a convertir" />
+
                     <Button
                         android:id="@+id/btnMetrosConvertir"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="180dp"
-                        android:text="CONVERTIR"/>
+                        android:layout_below="@id/txtMetrosCantidad"
+                        android:layout_marginTop="20dp"
+                        android:text="CONVERTIR" />
 
                     <TextView
                         android:id="@+id/lblrespuesta"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/btnMetrosConvertir"
-                        android:layout_marginTop="40dp"
-                        android:layout_marginLeft="40dp"
+                        android:layout_below="@id/btnMetrosConvertir"
+                        android:layout_marginTop="20dp"
                         android:text="Respuesta: ?" />
                 </RelativeLayout>
 
+                <!-- Tab Área -->
                 <RelativeLayout
                     android:id="@+id/tabConversor"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/lblAreaDe"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="40dp"
-                        android:layout_marginLeft="40dp"
-                        android:text="DE:" />
-
-                    <TextView
-                        android:id="@+id/lblAreaA"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="80dp"
-                        android:layout_marginLeft="40dp"
-                        android:text="A:" />
-
-                    <Spinner
-                        android:id="@+id/spnAreaDe"
-                        android:entries="@array/spnArea"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="80dp"
-                        android:layout_marginTop="35dp" />
-
-                    <Spinner
-                        android:id="@+id/spnAreaA"
-                        android:entries="@array/spnArea"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="75dp"
-                        android:layout_marginLeft="80dp"/>
+                    android:layout_height="match_parent">
 
                     <EditText
                         android:id="@+id/txtAreaCantidad"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="120dp"
-                        android:hint="Cantidad a convertir"/>
+                        android:layout_marginTop="50dp"
+                        android:hint="Cantidad a convertir" />
 
                     <Button
                         android:id="@+id/btnAreaConvertir"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="180dp"
-                        android:text="CONVERTIR"/>
+                        android:layout_below="@id/txtAreaCantidad"
+                        android:layout_marginTop="20dp"
+                        android:text="CONVERTIR" />
+
+                    <TextView
+                        android:id="@+id/lblAreaRespuesta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/btnAreaConvertir"
+                        android:layout_marginTop="20dp"
+                        android:text="Resultado: ?" />
                 </RelativeLayout>
 
             </FrameLayout>
-
 
         </LinearLayout>
     </TabHost>
