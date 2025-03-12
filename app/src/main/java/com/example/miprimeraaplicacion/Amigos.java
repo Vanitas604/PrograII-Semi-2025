@@ -1,5 +1,6 @@
 package com.example.miprimeraaplicacion;
 
+
 public class Amigos {
     String idAmigo;
     String nombre;
