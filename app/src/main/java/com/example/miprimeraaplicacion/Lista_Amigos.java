@@ -30,7 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class lista_amigos extends Activity {
+public class Lista_Amigos extends Activity {
     Bundle parametros = new Bundle();
     ListView ltsAmigos;
     Cursor cAmigos;
