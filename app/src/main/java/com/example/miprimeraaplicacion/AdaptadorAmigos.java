@@ -14,11 +14,11 @@ import java.util.ArrayList;
 
 public class AdaptadorAmigos extends BaseAdapter {
     Context context;
-    ArrayList<Amigos> alAmigos;
-    Amigos misAmigos;
+    ArrayList<amigos> alAmigos;
+    amigos misAmigos;
     LayoutInflater inflater;
 
-    public AdaptadorAmigos(Context context, ArrayList<Amigos> alAmigos) {
+    public AdaptadorAmigos(Context context, ArrayList<amigos> alAmigos) {
         this.context = context;
         this.alAmigos = alAmigos;
     }

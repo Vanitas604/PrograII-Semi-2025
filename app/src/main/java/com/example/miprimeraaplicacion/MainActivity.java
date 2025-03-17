@@ -1,39 +1,19 @@
 package com.example.miprimeraaplicacion;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.inputmethodservice.Keyboard;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import androidx.core.app.ActivityCompat;
+
 import androidx.appcompat.app.AppCompatActivity;
-import android.content.Intent;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONObject;
-
-import java.security.Key;
 
 public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
@@ -104,8 +84,8 @@ public class MainActivity extends AppCompatActivity {
         tempVal = findViewById(R.id.txtDui);
         String dui = tempVal.getText().toString();
 
-        String[] datos = {"", nombre, direccion, telefono, email, dui, ""};
-        db.administrar_amigos("agregar", datos);
+        String[] datos = {idAmigo, nombre, direccion, telefono, email, dui, ""};
+        db.administrar_amigos(accion, datos);
         Toast.makeText(getApplicationContext(), "Registro guardado con exito.", Toast.LENGTH_LONG).show();
         abrirVentana();
     }

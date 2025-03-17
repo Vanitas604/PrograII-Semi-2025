@@ -1,7 +1,7 @@
 package com.example.miprimeraaplicacion;
 
 
-public class Amigos {
+public class amigos {
     String idAmigo;
     String nombre;
     String direccion;
@@ -10,7 +10,7 @@ public class Amigos {
     String dui;
     String foto;
 
-    public Amigos(String idAmigo, String nombre, String direccion, String telefono, String email, String dui, String foto) {
+    public amigos(String idAmigo, String nombre, String direccion, String telefono, String email, String dui, String foto) {
         this.idAmigo = idAmigo;
         this.nombre = nombre;
         this.direccion = direccion;

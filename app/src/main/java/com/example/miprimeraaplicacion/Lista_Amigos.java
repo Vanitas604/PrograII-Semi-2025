@@ -1,6 +1,7 @@
 package com.example.miprimeraaplicacion;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,40 +15,39 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 
-public class Lista_Amigos extends Activity {
+public class lista_amigos extends Activity {
     Bundle parametros = new Bundle();
     ListView ltsAmigos;
     Cursor cAmigos;
     DB db;
-    final ArrayList<Amigos> alAmigos = new ArrayList<Amigos>();
-    final ArrayList<Amigos> alAmigosCopia = new ArrayList<Amigos>();
+    final ArrayList<amigos> alAmigos = new ArrayList<amigos>();
+    final ArrayList<amigos> alAmigosCopia = new ArrayList<amigos>();
     JSONArray jsonArray;
     JSONObject jsonObject;
-    Amigos misAmigos;
+    amigos misAmigos;
     FloatingActionButton fab;
-
-
     int posicion = 0;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_amigos);
 
         parametros.putString("accion", "nuevo");
-
         db = new DB(this);
 
         fab = findViewById(R.id.fabAgregarAmigo);
@@ -55,9 +55,6 @@ public class Lista_Amigos extends Activity {
         obtenerDatosAmigos();
         buscarAmigos();
     }
-
-
-
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -71,38 +68,54 @@ public class Lista_Amigos extends Activity {
             mostrarMsg("Error: " + e.getMessage());
         }
     }
-
-
-
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         try{
-            if (item.getItemId()==R.id.mnxNuevo){
+            if( item.getItemId()==R.id.mnxNuevo){
                 abriVentana();
-
-            }else if (item.getItemId()==R.id.mnxModifica){
+            }else if( item.getItemId()==R.id.mnxModificar){
                 parametros.putString("accion", "modificar");
                 parametros.putString("amigos", jsonArray.getJSONObject(posicion).toString());
                 abriVentana();
-
-            }else if (item.getItemId()==R.id.mnxEliminar){
-                //Eliminar amigo
-
+            } else if (item.getItemId()==R.id.mnxEliminar) {
+                eliminarAmigo();
             }
             return true;
-
         }catch (Exception e){
-            mostrarMsg("Error:"+ e.getMessage());
+            mostrarMsg("Error: " + e.getMessage());
+            return super.onContextItemSelected(item);
         }
-        return super.onContextItemSelected(item);
     }
-
-
-
-
-
+    private void eliminarAmigo(){
+        try{
+            String nombre = jsonArray.getJSONObject(posicion).getString("nombre");
+            AlertDialog.Builder confirmacion = new AlertDialog.Builder(this);
+            confirmacion.setTitle("Esta seguro de eliminar a: ");
+            confirmacion.setMessage(nombre);
+            confirmacion.setPositiveButton("Si", (dialog, which) -> {
+                try {
+                    String respuesta = db.administrar_amigos("eliminar", new String[]{jsonArray.getJSONObject(posicion).getString("idAmigo")});
+                    if(respuesta.equals("ok")) {
+                        obtenerDatosAmigos();
+                        mostrarMsg("Registro eliminado con exito");
+                    }else{
+                        mostrarMsg("Error: " + respuesta);
+                    }
+                }catch (Exception e){
+                    mostrarMsg("Error: " + e.getMessage());
+                }
+            });
+            confirmacion.setNegativeButton("No", (dialog, which) -> {
+                dialog.dismiss();
+            });
+            confirmacion.create().show();
+        }catch (Exception e){
+            mostrarMsg("Error: " + e.getMessage());
+        }
+    }
     private void abriVentana(){
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtras(parametros);
         startActivity(intent);
     }
     private void obtenerDatosAmigos(){
@@ -139,7 +152,7 @@ public class Lista_Amigos extends Activity {
 
                 for (int i=0; i<jsonArray.length(); i++){
                     jsonObject = jsonArray.getJSONObject(i);
-                    misAmigos = new Amigos(
+                    misAmigos = new amigos(
                             jsonObject.getString("idAmigo"),
                             jsonObject.getString("nombre"),
                             jsonObject.getString("direccion"),
@@ -175,7 +188,7 @@ public class Lista_Amigos extends Activity {
                 if( buscar.length()<=0){
                     alAmigos.addAll(alAmigosCopia);
                 }else{
-                    for (Amigos item: alAmigosCopia){
+                    for (amigos item: alAmigosCopia){
                         if(item.getNombre().toLowerCase().contains(buscar) ||
                                 item.getDui().toLowerCase().contains(buscar) ||
                                 item.getEmail().toLowerCase().contains(buscar)){
