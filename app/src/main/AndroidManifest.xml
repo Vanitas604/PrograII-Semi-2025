@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Permisos de almacenamiento -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Cámara opcional -->
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MiPrimeraAplicacion"
-        tools:targetApi="31">
+        android:theme="@style/Theme.MiPrimeraAplicacion">
+
+        <!-- Verifica la versión antes de usar opciones incompatibles -->
+        <meta-data android:name="android.support.VERSION_CHECK"
+            android:value="22" />
+
         <activity android:name=".MainActivity"
             android:exported="true"/>
         <activity
-            android:name=".Lista_Amigos"
+            android:name=".Lista_producto"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- FileProvider (solo necesario para API >= 24, ignorable en API 22) -->
         <provider
             android:authorities="com.ugb.miprimeraaplicacion.fileprovider"
             android:name="androidx.core.content.FileProvider"
@@ -33,4 +45,3 @@
     </application>
 
 </manifest>
-

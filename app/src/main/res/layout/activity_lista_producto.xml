@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Lista_producto">
+
+    <!-- Campo de búsqueda para filtrar productos -->
+    <EditText
+        android:id="@+id/txtBuscarProductos"
+        android:hint="Buscar productos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:inputType="text"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:importantForAccessibility="yes"
+        android:contentDescription="Campo para buscar productos"/>
+
+    <!-- Lista de productos -->
+    <ListView
+        android:id="@+id/ltsProductos"
+        android:layout_below="@id/txtBuscarProductos"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="0.5dp"
+        android:indicatorLeft="10dp"
+        android:importantForAccessibility="yes"
+        android:contentDescription="Lista de productos"/>
+
+    <!-- FloatingActionButton para agregar nuevos productos -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAgregarProducto"
+        android:src="@android:drawable/ic_input_add"
+        android:contentDescription="Botón para agregar productos"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>
