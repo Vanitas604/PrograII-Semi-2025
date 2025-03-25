@@ -13,15 +13,16 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+
 public class AdaptadorProducto extends BaseAdapter {
-    Context context;
-    ArrayList<Producto> listaProducto;
-    Producto producto;
-    LayoutInflater inflater;
+    private Context context;
+    private ArrayList<Producto> listaProducto;
+    private LayoutInflater inflater;
 
     public AdaptadorProducto(Context context, ArrayList<Producto> listaProductos) {
         this.context = context;
-        this.listaProducto = listaProductos;
+        this.listaProducto = (listaProductos != null) ? listaProductos : new ArrayList<>(); // Evita null
+        this.inflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -31,42 +32,55 @@ public class AdaptadorProducto extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return listaProducto.get(position);
+        return (position >= 0 && position < listaProducto.size()) ? listaProducto.get(position) : null;
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView = inflater.inflate(R.layout.foto, parent, false);
-        try {
-            producto = listaProducto.get(position);
-
-            TextView tempVal = itemView.findViewById(R.id.txtCodigo);
-            tempVal.setText(producto.getCodigo());
-
-            tempVal = itemView.findViewById(R.id.txtDescripcion);
-            tempVal.setText(producto.getDescripcion());
-
-            tempVal = itemView.findViewById(R.id.txtMarca);
-            tempVal.setText(producto.getMarca());
-
-            tempVal = itemView.findViewById(R.id.txtPresentacion);
-            tempVal.setText(producto.getPresentacion());
-
-            tempVal = itemView.findViewById(R.id.txtPrecio);
-            tempVal.setText("$" + producto.getPrecio());
-
-            ImageView img = itemView.findViewById(R.id.imgFotoAdaptador);
-            Bitmap bitmap = BitmapFactory.decodeFile(producto.getFoto());
-            img.setImageBitmap(bitmap);
-        } catch (Exception e) {
-            Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        View itemView = convertView;
+        if (itemView == null) {
+            itemView = inflater.inflate(R.layout.foto, parent, false); // Usando foto.xml
         }
+
+        try {
+            Producto producto = listaProducto.get(position);
+
+            TextView txtCodigo = itemView.findViewById(R.id.txtCodigo);
+            TextView txtDescripcion = itemView.findViewById(R.id.txtDescripcion);
+            TextView txtMarca = itemView.findViewById(R.id.txtMarca);
+            TextView txtPresentacion = itemView.findViewById(R.id.txtPresentacion);
+            TextView txtPrecio = itemView.findViewById(R.id.txtPrecio);
+            ImageView imgFoto = itemView.findViewById(R.id.imgFotoAdaptador);
+
+            // Seteando los datos del producto
+            txtCodigo.setText(producto.getCodigo());
+            txtDescripcion.setText(producto.getDescripcion());
+            txtMarca.setText(producto.getMarca());
+            txtPresentacion.setText(producto.getPresentacion());
+            txtPrecio.setText("$" + producto.getPrecio());
+
+            // Verificar y cargar la imagen correctamente
+            if (producto.getFoto() != null && !producto.getFoto().isEmpty()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(producto.getFoto());
+                if (bitmap != null) {
+                    imgFoto.setImageBitmap(bitmap);
+                } else {
+                    imgFoto.setImageResource(R.mipmap.ic_launcher); // Imagen de respaldo si falla la carga
+                }
+            } else {
+                imgFoto.setImageResource(R.mipmap.ic_launcher); // Imagen de respaldo si no hay foto
+            }
+
+        } catch (Exception e) {
+            Toast.makeText(context, "Error en Adaptador: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
         return itemView;
     }
 }
+

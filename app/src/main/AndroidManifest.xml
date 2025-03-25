@@ -34,7 +34,7 @@
 
         <!-- FileProvider (solo necesario para API >= 24, ignorable en API 22) -->
         <provider
-            android:authorities="com.ugb.miprimeraaplicacion.fileprovider"
+            android:authorities="com.example.miprimeraaplicacion.fileprovider"
             android:name="androidx.core.content.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">

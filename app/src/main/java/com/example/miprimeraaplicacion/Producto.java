@@ -1,17 +1,17 @@
 package com.example.miprimeraaplicacion;
 
 public class Producto {
-    String idProducto;
-    String codigo;
-    String descripcion;
-    String marca;
-    String presentacion;
-    String precio;
-    String foto; // URL o ruta de la imagen
+    private String idProducto;
+    private String codigo;
+    private String descripcion;
+    private String marca;
+    private String presentacion;
+    private double precio;
+    private String foto;
 
-    // Constructor para inicializar un nuevo producto
-    public Producto(String idProducto, String codigo, String descripcion, String marca,
-                    String presentacion, String precio, String foto) {
+    // Constructor
+    public Producto(String idProducto, String codigo, String descripcion,
+                    String marca, String presentacion, double precio, String foto) {
         this.idProducto = idProducto;
         this.codigo = codigo;
         this.descripcion = descripcion;
@@ -21,8 +21,18 @@ public class Producto {
         this.foto = foto;
     }
 
-    // Getters y setters para cada propiedad
+    // Constructor de copia (para evitar referencias duplicadas)
+    public Producto(Producto otro) {
+        this.idProducto = otro.idProducto;
+        this.codigo = otro.codigo;
+        this.descripcion = otro.descripcion;
+        this.marca = otro.marca;
+        this.presentacion = otro.presentacion;
+        this.precio = otro.precio;
+        this.foto = otro.foto;
+    }
 
+    // Getters y setters
     public String getIdProducto() {
         return idProducto;
     }
@@ -64,10 +74,10 @@ public class Producto {
     }
 
     public String getPrecio() {
-        return precio;
+        return String.valueOf(precio);
     }
 
-    public void setPrecio(String precio) {
+    public void setPrecio(double precio) {
         this.precio = precio;
     }
 
@@ -79,7 +89,7 @@ public class Producto {
         this.foto = foto;
     }
 
-    // Método que puede ser útil para retornar una representación de los datos del producto
+    // metodo toString() para obtener una representación en cadena del producto
     @Override
     public String toString() {
         return "Producto{" +
@@ -91,6 +101,9 @@ public class Producto {
                 ", precio='" + precio + '\'' +
                 ", foto='" + foto + '\'' +
                 '}';
+    }
+
+    public static void add(com.example.miprimeraaplicacion.Producto producto) {
     }
 }
 

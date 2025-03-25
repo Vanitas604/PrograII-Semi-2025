@@ -1,7 +1,10 @@
 package com.example.miprimeraaplicacion;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -13,10 +16,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Lista_producto extends Activity {
@@ -26,8 +33,6 @@ public class Lista_producto extends Activity {
     DB db;
     final ArrayList<Producto> alProducto = new ArrayList<>();
     final ArrayList<Producto> alProductoCopia = new ArrayList<>();
-    JSONArray jsonArray;
-    JSONObject jsonObject;
     Producto misProducto;
     FloatingActionButton fab;
     int posicion = 0;
@@ -40,8 +45,10 @@ public class Lista_producto extends Activity {
         parametros.putString("accion", "nuevo");
         db = new DB(this);
 
+        ltsProducto = findViewById(R.id.ltsProductos);
         fab = findViewById(R.id.fabAgregarProducto);
         fab.setOnClickListener(view -> abrirVentana());
+
         obtenerDatosProductos();
         buscarProductos();
     }
@@ -54,7 +61,7 @@ public class Lista_producto extends Activity {
         try {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             posicion = info.position;
-            menu.setHeaderTitle(jsonArray.getJSONObject(posicion).getString("descripcion"));
+            menu.setHeaderTitle(alProducto.get(posicion).getDescripcion());
         } catch (Exception e) {
             mostrarMsg("Error: " + e.getMessage());
         }
@@ -67,7 +74,7 @@ public class Lista_producto extends Activity {
                 abrirVentana();
             } else if (item.getItemId() == R.id.mnxModifica) {
                 parametros.putString("accion", "modificar");
-                parametros.putString("producto", jsonArray.getJSONObject(posicion).toString());
+                parametros.putString("producto", alProducto.get(posicion).toString());
                 abrirVentana();
             } else if (item.getItemId() == R.id.mnxEliminar) {
                 eliminarProducto();
@@ -81,24 +88,11 @@ public class Lista_producto extends Activity {
 
     private void eliminarProducto() {
         try {
-            String descripcion = jsonArray.getJSONObject(posicion).getString("descripcion");
+            String descripcion = alProducto.get(posicion).getDescripcion();
             AlertDialog.Builder confirmacion = new AlertDialog.Builder(this);
             confirmacion.setTitle("¿Está seguro de eliminar el producto?");
             confirmacion.setMessage(descripcion);
-            confirmacion.setPositiveButton("Sí", (dialog, which) -> {
-                try {
-                    String respuesta = db.administrar_productos("eliminar",
-                            new String[]{jsonArray.getJSONObject(posicion).getString("idProducto")});
-                    if (respuesta.equals("ok")) {
-                        obtenerDatosProductos();
-                        mostrarMsg("Producto eliminado con éxito.");
-                    } else {
-                        mostrarMsg("Error: " + respuesta);
-                    }
-                } catch (Exception e) {
-                    mostrarMsg("Error: " + e.getMessage());
-                }
-            });
+            confirmacion.setPositiveButton("Sí", this::onClick);
             confirmacion.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
             confirmacion.create().show();
         } catch (Exception e) {
@@ -112,21 +106,23 @@ public class Lista_producto extends Activity {
         startActivity(intent);
     }
 
+    @SuppressLint("Range")
     private void obtenerDatosProductos() {
         try {
-            cProducto = db.lista_productos();
-            if (cProducto.moveToFirst()) {
-                jsonArray = new JSONArray();
+            cProducto = (Cursor) db.lista_productos();
+            if (cProducto != null && cProducto.moveToFirst()) {
+                alProducto.clear();
                 do {
-                    jsonObject = new JSONObject();
-                    jsonObject.put("idProducto", cProducto.getString(0));
-                    jsonObject.put("codigo", cProducto.getString(1));
-                    jsonObject.put("descripcion", cProducto.getString(2));
-                    jsonObject.put("marca", cProducto.getString(3));
-                    jsonObject.put("presentacion", cProducto.getString(4));
-                    jsonObject.put("precio", cProducto.getString(5));
-                    jsonObject.put("foto", cProducto.getString(6));
-                    jsonArray.put(jsonObject);
+                    misProducto = new Producto(
+                            cProducto.getString(cProducto.getColumnIndex("idProducto")),
+                            cProducto.getString(cProducto.getColumnIndex("codigo")),
+                            cProducto.getString(cProducto.getColumnIndex("descripcion")),
+                            cProducto.getString(cProducto.getColumnIndex("marca")),
+                            cProducto.getString(cProducto.getColumnIndex("presentacion")),
+                            cProducto.getString(cProducto.getColumnIndex("precio")),
+                            cProducto.getString(cProducto.getColumnIndex("foto"))
+                    );
+                    alProducto.add(misProducto);
                 } while (cProducto.moveToNext());
                 mostrarDatosProducto();
             } else {
@@ -135,31 +131,20 @@ public class Lista_producto extends Activity {
             }
         } catch (Exception e) {
             mostrarMsg("Error: " + e.getMessage());
+        } finally {
+            if (cProducto != null && !cProducto.isClosed()) {
+                cProducto.close(); // Asegurarse de cerrar el Cursor
+            }
         }
     }
 
     private void mostrarDatosProducto() {
         try {
-            if (jsonArray.length() > 0) {
-                ltsProducto = findViewById(R.id.ltsProductos);
-                alProducto.clear();
+            if (!alProducto.isEmpty()) {
                 alProductoCopia.clear();
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    jsonObject = jsonArray.getJSONObject(i);
-                    misProducto = new Producto(
-                            jsonObject.getString("idProducto"),
-                            jsonObject.getString("codigo"),
-                            jsonObject.getString("descripcion"),
-                            jsonObject.getString("marca"),
-                            jsonObject.getString("presentacion"),
-                            jsonObject.getString("precio"),
-                            jsonObject.getString("foto")
-                    );
-                    alProducto.add(misProducto);
-                }
                 alProductoCopia.addAll(alProducto);
-                ltsProducto.setAdapter(new AdaptadorProducto(this, alProducto));
+                AdaptadorProducto adaptador = new AdaptadorProducto(this, alProducto);
+                ltsProducto.setAdapter(adaptador);
                 registerForContextMenu(ltsProducto);
             } else {
                 mostrarMsg("No hay productos registrados.");
@@ -174,36 +159,50 @@ public class Lista_producto extends Activity {
         TextView tempVal = findViewById(R.id.txtBuscarProductos);
         tempVal.addTextChangedListener(new android.text.TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                alProducto.clear();
                 String buscar = tempVal.getText().toString().trim().toLowerCase();
-                if (buscar.length() <= 0) {
+                alProducto.clear();
+
+                if (buscar.isEmpty()) {
                     alProducto.addAll(alProductoCopia);
                 } else {
                     for (Producto item : alProductoCopia) {
                         if (item.getDescripcion().toLowerCase().contains(buscar) ||
                                 item.getCodigo().toLowerCase().contains(buscar) ||
                                 item.getMarca().toLowerCase().contains(buscar)) {
-                            alProducto.add(item);
+                            alProducto.add(item); // No es necesario crear un nuevo objeto Producto
                         }
                     }
-                    ltsProducto.setAdapter(new AdaptadorProducto(getApplicationContext(), alProducto));
                 }
+
+                // Actualizar la lista sin crear un nuevo adaptador
+                ((AdaptadorProducto) ltsProducto.getAdapter()).notifyDataSetChanged();
             }
 
             @Override
-            public void afterTextChanged(android.text.Editable s) {
-            }
+            public void afterTextChanged(android.text.Editable s) {}
         });
     }
 
     private void mostrarMsg(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
+
+    private void onClick(DialogInterface dialog, int which) {
+        try {
+            String respuesta = db.administrar_productos("eliminar",
+                    new String[]{alProducto.get(posicion).getIdProducto()});
+            if (respuesta.equals("ok")) {
+                obtenerDatosProductos(); // Refrescar la lista
+                mostrarMsg("Producto eliminado con éxito.");
+            } else {
+                mostrarMsg("Error: " + respuesta);
+            }
+        } catch (Exception e) {
+            mostrarMsg("Error: " + e.getMessage());
+        }
+    }
 }
-
-
