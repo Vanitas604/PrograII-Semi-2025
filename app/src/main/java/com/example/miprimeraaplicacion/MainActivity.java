@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 fotoAmigo = crearImagenAmigo();
                 if( fotoAmigo!=null ){
                     Uri uriFotoAimgo = FileProvider.getUriForFile(MainActivity.this,
-                            "com.ugb.miprimeraaplicacion.fileprovider", fotoAmigo);
+                            "com.example.miprimeraaplicacion.fileprovider", fotoAmigo);
                     tomarFotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriFotoAimgo);
                     startActivityForResult(tomarFotoIntent, 1);
                 }else{
