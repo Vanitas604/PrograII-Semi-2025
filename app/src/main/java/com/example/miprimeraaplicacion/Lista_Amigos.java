@@ -26,11 +26,12 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Lista_amigos extends Activity {
+public class Lista_Amigos extends Activity {
     Bundle parametros = new Bundle();
     ListView ltsAmigos;
     Cursor cAmigos;
@@ -94,6 +95,22 @@ public class Lista_amigos extends Activity {
             confirmacion.setMessage(nombre);
             confirmacion.setPositiveButton("Si", (dialog, which) -> {
                 try {
+                    di = new detectarInternet(this);
+                    if(di.hayConexionInternet()){//online
+                        JSONObject datosAmigos = new JSONObject();
+                        String _id = jsonArray.getJSONObject(posicion).getJSONObject("value").getString("_id");
+                        String _rev = jsonArray.getJSONObject(posicion).getJSONObject("value").getString("_rev");
+                        String url = utilidades.url_consulta + "/" + _id + "?rev=" + _rev;
+                        enviarDatosServidor objEnviarDatosServidor = new enviarDatosServidor(this);
+                        String respuesta = objEnviarDatosServidor.execute(datosAmigos.toString(), "DELETE", url).get();
+                        JSONObject respuestaJSON = new JSONObject(respuesta);
+                        if (respuestaJSON.getBoolean("ok")){
+                            obtenerDatosAmigos();
+                            mostrarMsg("Registro eliminado con exito");
+                        }else {
+                            mostrarMsg("Error: " + respuesta);
+                        }
+                    }
                     String respuesta = db.administrar_amigos("eliminar", new String[]{jsonArray.getJSONObject(posicion).getJSONObject("value").getString("idAmigo")});
                     if(respuesta.equals("ok")) {
                         obtenerDatosAmigos();
@@ -162,7 +179,7 @@ public class Lista_amigos extends Activity {
     private void mostrarDatosAmigos(){
         try{
             if(jsonArray.length()>0){
-                ltsAmigos = findViewById(R.id.ltsAmigos);
+                ltsAmigos = findViewById(R.id.fabListaAmigos);
                 alAmigos.clear();
                 alAmigosCopia.clear();
                 for (int i=0; i<jsonArray.length(); i++){

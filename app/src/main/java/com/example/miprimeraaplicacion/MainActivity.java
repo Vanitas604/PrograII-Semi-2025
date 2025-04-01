@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 urlCompletaFoto = datos.getString("urlFoto");
                 img.setImageURI(Uri.parse(urlCompletaFoto));
             }else {
-                idAmigo = utls.generarUnicoid();
+                idAmigo = utls.generarUnicoId();
             }
         }catch (Exception e){
             mostrarMsg("Error: "+e.getMessage());
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
     private void abrirVentana(){
-        Intent intent = new Intent(this, lista_amigos.class);
+        Intent intent = new Intent(this, Lista_Amigos.class);
         startActivity(intent);
     }
     private void guardarAmigo() {
