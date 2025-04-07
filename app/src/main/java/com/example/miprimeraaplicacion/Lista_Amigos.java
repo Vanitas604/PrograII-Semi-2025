@@ -49,8 +49,10 @@ public class Lista_Amigos extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_amigos);
+
         parametros.putString("accion", "nuevo");
         db = new DB(this);
+
         fab = findViewById(R.id.fabAgregarAmigo);
         fab.setOnClickListener(view -> abriVentana());
         listarDatos();
@@ -60,7 +62,7 @@ public class Lista_Amigos extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.mimenu, menu);
         try {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             posicion = info.position;
@@ -100,20 +102,20 @@ public class Lista_Amigos extends Activity {
                         JSONObject datosAmigos = new JSONObject();
                         String _id = jsonArray.getJSONObject(posicion).getJSONObject("value").getString("_id");
                         String _rev = jsonArray.getJSONObject(posicion).getJSONObject("value").getString("_rev");
-                        String url = utilidades.url_consulta + "/" + _id + "?rev=" + _rev;
+                        String url = utilidades.url_mto + "/" + _id + "?rev=" + _rev;
                         enviarDatosServidor objEnviarDatosServidor = new enviarDatosServidor(this);
                         String respuesta = objEnviarDatosServidor.execute(datosAmigos.toString(), "DELETE", url).get();
                         JSONObject respuestaJSON = new JSONObject(respuesta);
-                        if (respuestaJSON.getBoolean("ok")){
-                            obtenerDatosAmigos();
-                            mostrarMsg("Registro eliminado con exito");
-                        }else {
+                        if(!respuestaJSON.getBoolean("ok")) {
+
+
+
                             mostrarMsg("Error: " + respuesta);
                         }
                     }
                     String respuesta = db.administrar_amigos("eliminar", new String[]{jsonArray.getJSONObject(posicion).getJSONObject("value").getString("idAmigo")});
                     if(respuesta.equals("ok")) {
-                        obtenerDatosAmigos();
+                        listarDatos();
                         mostrarMsg("Registro eliminado con exito");
                     }else{
                         mostrarMsg("Error: " + respuesta);
@@ -153,7 +155,7 @@ public class Lista_Amigos extends Activity {
     }
     private void obtenerDatosAmigos(){
         try{
-            cAmigos = db.Lista_amigos();
+            cAmigos = db.lista_amigos();
             if(cAmigos.moveToFirst()){
                 jsonArray = new JSONArray();
                 do{
@@ -179,9 +181,10 @@ public class Lista_Amigos extends Activity {
     private void mostrarDatosAmigos(){
         try{
             if(jsonArray.length()>0){
-                ltsAmigos = findViewById(R.id.fabListaAmigos);
+                ltsAmigos = findViewById(R.id.ltsAmigos);
                 alAmigos.clear();
                 alAmigosCopia.clear();
+
                 for (int i=0; i<jsonArray.length(); i++){
                     jsonObject = jsonArray.getJSONObject(i).getJSONObject("value");
                     misAmigos = new amigos(
@@ -211,6 +214,7 @@ public class Lista_Amigos extends Activity {
         tempVal.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -231,10 +235,10 @@ public class Lista_Amigos extends Activity {
             }
             @Override
             public void afterTextChanged(Editable s) {
+
             }
         });
     }
     private void mostrarMsg(String msg){
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
-}
