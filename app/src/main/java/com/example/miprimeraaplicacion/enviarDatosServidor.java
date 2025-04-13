@@ -1,8 +1,10 @@
 package com.example.miprimeraaplicacion;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -23,6 +25,7 @@ public class enviarDatosServidor extends AsyncTask<String, String, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
     }
+    @SuppressLint("NewApi")
     @Override
     protected String doInBackground(String... parametros) {
         String jsonResponse = "";
