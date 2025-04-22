@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     Button btnAnterior;
     TextView txtPosition;
 
+    // Nuevas variables para "Costo" y "Stock"
+    EditText txtCosto, txtStock;
+
     @SuppressLint("NewApi")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -55,10 +58,14 @@ public class MainActivity extends AppCompatActivity {
         img = findViewById(R.id.imgFotoProducto);
         db = new DB(this);
         btn = findViewById(R.id.btnGuardarProducto);
-        btn.setOnClickListener(view->guardarAmigo());
+        btn.setOnClickListener(view -> guardarAmigo());
+
+        // Inicializando los nuevos campos
+        txtCosto = findViewById(R.id.txtCosto);
+        txtStock = findViewById(R.id.txtStock);
 
         fab = findViewById(R.id.fabListaProductos);
-        fab.setOnClickListener(view->abrirVentana());
+        fab.setOnClickListener(view -> abrirVentana());
 
         btnAnterior = findViewById(R.id.btnAtras);
         btnAnterior.setOnClickListener(view -> anteriorClick());
@@ -70,14 +77,12 @@ public class MainActivity extends AppCompatActivity {
         posicionImg = 0;
         mostrarDatos();
         tomarFoto();
-
     }
 
-    private void siguienteClick(){
+    private void siguienteClick() {
         if (posicionImg < 2) {
-
             posicionImg++;
-            txtPosition.setText(posicionImg+1 + " de 3");
+            txtPosition.setText(posicionImg + 1 + " de 3");
 
             switch (posicionImg) {
                 case 0:
@@ -90,14 +95,15 @@ public class MainActivity extends AppCompatActivity {
                     img.setImageURI(Uri.parse(urlCompletaFoto2));
                     break;
             }
-        }else {
-            mostrarMsg("No hay mas fotos");
+        } else {
+            mostrarMsg("No hay más fotos");
         }
     }
-    private void anteriorClick(){
+
+    private void anteriorClick() {
         if (posicionImg > 0) {
             posicionImg--;
-            txtPosition.setText(posicionImg+1 + " de 3");
+            txtPosition.setText(posicionImg + 1 + " de 3");
             switch (posicionImg) {
                 case 0:
                     img.setImageURI(Uri.parse(urlCompletaFoto));
@@ -109,12 +115,12 @@ public class MainActivity extends AppCompatActivity {
                     img.setImageURI(Uri.parse(urlCompletaFoto2));
                     break;
             }
-        }else {
-            mostrarMsg("No hay mas fotos");
+        } else {
+            mostrarMsg("No hay más fotos");
         }
     }
 
-    private void mostrarDatos(){
+    private void mostrarDatos() {
         try {
             Bundle parametros = getIntent().getExtras();
             accion = parametros.getString("accion");
@@ -122,12 +128,10 @@ public class MainActivity extends AppCompatActivity {
             if (accion.equals("modificar")) {
                 JSONObject datos = new JSONObject(parametros.getString("productos"));
                 di = new detectarInternet(this);
-                if (di.hayConexionInternet()){
+                if (di.hayConexionInternet()) {
                     id = datos.getString("_id");
                     rev = datos.getString("_rev");
                 }
-
-
 
                 idProducto = datos.getString("idProducto");
 
@@ -146,33 +150,38 @@ public class MainActivity extends AppCompatActivity {
                 tempVal = findViewById(R.id.txtPrecio);
                 tempVal.setText(datos.getString("precio"));
 
+                // Cargar los nuevos campos de "Costo" y "Stock"
+                txtCosto.setText(datos.getString("costo"));
+                txtStock.setText(datos.getString("stock"));
+
                 urlCompletaFoto = datos.getString("foto");
                 urlCompletaFoto1 = datos.getString("foto1");
                 urlCompletaFoto2 = datos.getString("foto2");
                 img.setImageURI(Uri.parse(urlCompletaFoto));
-            }else {
+            } else {
                 idProducto = utls.generarUnicoId();
             }
-        }catch (Exception e){
-            mostrarMsg("Error: "+e.getMessage());
+        } catch (Exception e) {
+            mostrarMsg("Error: " + e.getMessage());
         }
     }
-    private void tomarFoto(){
-        img.setOnClickListener(view->{
+
+    private void tomarFoto() {
+        img.setOnClickListener(view -> {
             tomarFotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             File fotoProducto = null;
-            try{
+            try {
                 fotoProducto = crearImagenAmigo();
-                if( fotoProducto!=null ){
+                if (fotoProducto != null) {
                     Uri uriFotoAimgo = FileProvider.getUriForFile(MainActivity.this,
                             "com.example.miprimeraaplicacion.fileprovider", fotoProducto);
                     tomarFotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriFotoAimgo);
                     startActivityForResult(tomarFotoIntent, 1);
-                }else{
-                    mostrarMsg("Nose pudo crear la imagen.");
+                } else {
+                    mostrarMsg("No se pudo crear la imagen.");
                 }
-            }catch (Exception e){
-                mostrarMsg("Error: "+e.getMessage());
+            } catch (Exception e) {
+                mostrarMsg("Error: " + e.getMessage());
             }
         });
     }
@@ -180,9 +189,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        try{
-            if( requestCode==1 && resultCode==RESULT_OK ){
-                //Bitmap imagenBitmap = BitmapFactory.decodeFile(urlCompletaFoto);
+        try {
+            if (requestCode == 1 && resultCode == RESULT_OK) {
                 switch (posicionImg) {
                     case 0:
                         img.setImageURI(Uri.parse(urlCompletaFoto));
@@ -194,19 +202,19 @@ public class MainActivity extends AppCompatActivity {
                         img.setImageURI(Uri.parse(urlCompletaFoto2));
                         break;
                 }
-            }else{
-                mostrarMsg("No se tomo la foto.");
+            } else {
+                mostrarMsg("No se tomó la foto.");
             }
-        }catch (Exception e){
-            mostrarMsg("Error: "+e.getMessage());
+        } catch (Exception e) {
+            mostrarMsg("Error: " + e.getMessage());
         }
     }
 
-    private File crearImagenAmigo() throws Exception{
+    private File crearImagenAmigo() throws Exception {
         String fechaHoraMs = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()),
-                fileName = "imagen_"+ fechaHoraMs+"_";
+                fileName = "imagen_" + fechaHoraMs + "_";
         File dirAlmacenamiento = getExternalFilesDir(Environment.DIRECTORY_DCIM);
-        if( dirAlmacenamiento.exists()==false ){
+        if (!dirAlmacenamiento.exists()) {
             dirAlmacenamiento.mkdir();
         }
         File image = File.createTempFile(fileName, ".jpg", dirAlmacenamiento);
@@ -221,19 +229,18 @@ public class MainActivity extends AppCompatActivity {
                 urlCompletaFoto2 = image.getAbsolutePath();
                 break;
         }
-
-
-
-
         return image;
     }
-    private void mostrarMsg(String msg){
+
+    private void mostrarMsg(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
-    private void abrirVentana(){
+
+    private void abrirVentana() {
         Intent intent = new Intent(this, lista_productos.class);
         startActivity(intent);
     }
+
     private void guardarAmigo() {
         try {
             tempVal = findViewById(R.id.txtCodigo);
@@ -244,63 +251,71 @@ public class MainActivity extends AppCompatActivity {
 
             tempVal = findViewById(R.id.txtMarca);
             String marca = tempVal.getText().toString();
+
             tempVal = findViewById(R.id.txtPresentacion);
             String presentacion = tempVal.getText().toString();
 
             tempVal = findViewById(R.id.txtPrecio);
             String precio = tempVal.getText().toString();
 
+            // Capturar los nuevos campos
+            String costo = txtCosto.getText().toString();
+            String stock = txtStock.getText().toString();
+
             JSONObject datosProductos = new JSONObject();
 
             di = new detectarInternet(this);
 
-            if (di.hayConexionInternet()){
+            if (di.hayConexionInternet()) {
                 if (accion.equals("modificar")) {
                     datosProductos.put("_id", id);
                     datosProductos.put("_rev", rev);
                 }
             }
 
-
-
+            // Agregar los nuevos campos al objeto JSON
             datosProductos.put("idProducto", idProducto);
             datosProductos.put("codigo", codigo);
             datosProductos.put("descripcion", descripcion);
             datosProductos.put("marca", marca);
             datosProductos.put("presentacion", presentacion);
             datosProductos.put("precio", precio);
+            datosProductos.put("costo", costo);  // Nuevo campo "Costo"
+            datosProductos.put("stock", stock);  // Nuevo campo "Stock"
             datosProductos.put("foto", urlCompletaFoto);
             datosProductos.put("foto1", urlCompletaFoto1);
             datosProductos.put("foto2", urlCompletaFoto2);
 
             di = new detectarInternet(this);
-            if(di.hayConexionInternet()) {//online
-                //enviar los datos al servidor
+            if (di.hayConexionInternet()) { // Online
+                // Enviar los datos al servidor
                 enviarDatosServidor objEnviarDatos = new enviarDatosServidor(this);
                 String respuesta = objEnviarDatos.execute(datosProductos.toString(), "POST", utilidades.url_mto).get();
 
                 JSONObject respuestaJSON = new JSONObject(respuesta);
-                if(respuestaJSON.getBoolean("ok")){
+                if (respuestaJSON.getBoolean("ok")) {
                     id = respuestaJSON.getString("id");
                     rev = respuestaJSON.getString("rev");
-                }else{
-                    mostrarMsg("Error: "+respuestaJSON.getString("msg"));
+                } else {
+                    mostrarMsg("Error: " + respuestaJSON.getString("msg"));
                 }
-            }else{
-                String res =   db.administrarActualizados("modificar", "verdadero",idProducto);
-                String res1 =   db.administrarActualizados("nuevo", "verdadero",idProducto);
-
+            } else {
+                String res = db.administrarActualizados("modificar", "verdadero", idProducto);
+                String res1 = db.administrarActualizados("nuevo", "verdadero", idProducto);
             }
-            String[] datos = {idProducto, codigo, descripcion, marca, presentacion, precio, urlCompletaFoto, urlCompletaFoto1, urlCompletaFoto2};
+
+            // Guardar el producto en la base de datos
+            String[] datos = {idProducto, codigo, descripcion, marca, presentacion, precio, costo, stock, urlCompletaFoto, urlCompletaFoto1, urlCompletaFoto2};
             String respuesta = db.administrar_productos(accion, datos);
 
-            Toast.makeText(getApplicationContext(), "estado de registro ." + respuesta, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Estado de registro: " + respuesta, Toast.LENGTH_LONG).show();
             abrirVentana();
-        }catch (Exception e){
-            mostrarMsg("Error: "+e.getMessage());
+        } catch (Exception e) {
+            mostrarMsg("Error: " + e.getMessage());
         }
     }
 }
+
 
 
 
