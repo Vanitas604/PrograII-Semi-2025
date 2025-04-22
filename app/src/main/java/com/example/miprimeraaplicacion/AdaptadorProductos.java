@@ -46,7 +46,7 @@ public class AdaptadorProductos extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView = inflater.inflate(R.layout.fotos, parent, false);
+        View itemView = inflater.inflate(R.layout.foto, parent, false);
         try {
             misProductos = alAmigos.get(position);
 
