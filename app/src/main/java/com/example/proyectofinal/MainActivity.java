@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerTareas;
     AdaptadorTareas adaptador;
     ArrayList<Tareas> listaTareas;
-    Button btnAgregar, btnGrupos, btnCuenta;
+    Button btnAgregar, btnGrupos; // ← btnCuenta eliminado
 
     DBTareas dbHelper;
 
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerTareas = findViewById(R.id.recyclerTareas);
         btnAgregar = findViewById(R.id.btnAgregar);
         btnGrupos = findViewById(R.id.btnGrupos);
-        btnCuenta = findViewById(R.id.btnCuenta);
+        // btnCuenta eliminado
 
         dbHelper = new DBTareas(this);
         listaTareas = new ArrayList<>();
@@ -40,19 +40,16 @@ public class MainActivity extends AppCompatActivity {
         cargarTareas();
 
         btnAgregar.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CrearTareaActivity.class);
+            Intent intent = new Intent(MainActivity.this, AgregarTarea.class);
             startActivity(intent);
         });
 
         btnGrupos.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, GruposActivity.class);
+            Intent intent = new Intent(MainActivity.this, Lista_Grupos.class);
             startActivity(intent);
         });
 
-        btnCuenta.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CuentaActivity.class);
-            startActivity(intent);
-        });
+        // btnCuenta.setOnClickListener eliminado
     }
 
     private void cargarTareas() {

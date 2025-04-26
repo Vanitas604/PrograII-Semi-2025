@@ -6,22 +6,12 @@
     android:background="@android:color/white">
 
     <Button
-        android:id="@+id/btnCuenta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cuenta"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="8dp"
-        android:layout_alignParentTop="true"/>
-
-    <Button
         android:id="@+id/btnGrupos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Grupos"
-        android:layout_toEndOf="@id/btnCuenta"
-        android:layout_marginStart="16dp"
-        android:layout_alignTop="@id/btnCuenta" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
     <Button
         android:id="@+id/btnAgregar"
@@ -29,13 +19,14 @@
         android:layout_height="wrap_content"
         android:text="Agregar Tarea"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@id/btnCuenta" />
+        android:layout_alignTop="@id/btnGrupos" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerTareas"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/btnCuenta"
-        android:layout_marginTop="16dp"/>
+        android:layout_below="@id/btnGrupos"
+        android:layout_marginTop="16dp" />
 
 </RelativeLayout>
+
