@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <EditText
+        android:id="@+id/edtTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Título de la tarea" />
+
+    <EditText
+        android:id="@+id/edtDescripcion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descripción"
+        android:layout_below="@id/edtTitulo"
+        android:layout_marginTop="8dp" />
+
+    <EditText
+        android:id="@+id/edtGrupo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Grupo"
+        android:layout_below="@id/edtDescripcion"
+        android:layout_marginTop="8dp" />
+
+    <EditText
+        android:id="@+id/edtFecha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Fecha límite (ej: 2025-05-01)"
+        android:layout_below="@id/edtGrupo"
+        android:layout_marginTop="8dp" />
+
+    <CheckBox
+        android:id="@+id/chkRealizada"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¿Ya está realizada?"
+        android:layout_below="@id/edtFecha"
+        android:layout_marginTop="12dp" />
+
+    <Button
+        android:id="@+id/btnGuardar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Guardar"
+        android:layout_below="@id/chkRealizada"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btnCancelar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancelar"
+        android:layout_below="@id/btnGuardar"
+        android:layout_marginTop="8dp" />
+
+</RelativeLayout>

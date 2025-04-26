@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <Button
+        android:id="@+id/btnCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cuenta"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="8dp"
+        android:layout_alignParentTop="true"/>
+
+    <Button
+        android:id="@+id/btnGrupos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Grupos"
+        android:layout_toEndOf="@id/btnCuenta"
+        android:layout_marginStart="16dp"
+        android:layout_alignTop="@id/btnCuenta" />
+
+    <Button
+        android:id="@+id/btnAgregar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Agregar Tarea"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/btnCuenta" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerTareas"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnCuenta"
+        android:layout_marginTop="16dp"/>
+
+</RelativeLayout>
