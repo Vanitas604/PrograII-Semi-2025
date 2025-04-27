@@ -10,6 +10,8 @@ public class DBTareas extends SQLiteOpenHelper {
     private static final int VERSION_BASE_DATOS = 1;
 
     public static final String TABLA_TAREAS = "tareas";
+    public static final String TABLA_GRUPO = "grupo";
+
     public static final String COLUMNA_ID = "id";
     public static final String COLUMNA_TITULO = "titulo";
     public static final String COLUMNA_DESCRIPCION = "descripcion";
@@ -32,12 +34,19 @@ public class DBTareas extends SQLiteOpenHelper {
                 + COLUMNA_REALIZADA + " INTEGER" // 0 = no realizada, 1 = realizada
                 + ")";
         db.execSQL(CREATE_TABLE_TAREAS);
+
+        String CREATE_TABLE_GRUPO = "CREATE TABLE " + TABLA_GRUPO + "("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "nombre TEXT NOT NULL"
+                + ")";
+        db.execSQL(CREATE_TABLE_GRUPO);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Si actualizamos la versión, eliminamos la tabla anterior
         db.execSQL("DROP TABLE IF EXISTS " + TABLA_TAREAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLA_GRUPO);
         onCreate(db);
     }
 }
+
