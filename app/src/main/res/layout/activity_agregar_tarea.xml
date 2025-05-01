@@ -31,7 +31,7 @@
         android:id="@+id/edtFecha"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Fecha límite (ej: 2025-05-01)"
+        android:hint="Fecha de creación (ej: 2025-05-01)"
         android:layout_below="@id/edtGrupo"
         android:layout_marginTop="8dp" />
 

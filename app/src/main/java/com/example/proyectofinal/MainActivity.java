@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerTareas;
     AdaptadorTareas adaptador;
     ArrayList<Tareas> listaTareas;
-    Button btnAgregar, btnGrupos; // ← btnCuenta eliminado
+    Button btnAgregar, btnGrupos;
 
     DBTareas dbHelper;
 
@@ -28,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerTareas = findViewById(R.id.recyclerTareas);
         btnAgregar = findViewById(R.id.btnAgregar);
         btnGrupos = findViewById(R.id.btnGrupos);
-        // btnCuenta eliminado
 
         dbHelper = new DBTareas(this);
         listaTareas = new ArrayList<>();
@@ -48,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, Lista_Grupos.class);
             startActivity(intent);
         });
-
-        // btnCuenta.setOnClickListener eliminado
     }
 
     private void cargarTareas() {
@@ -73,4 +72,32 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
         adaptador.notifyDataSetChanged();
     }
+
+    // Inflar el menú (usa tu archivo res/menu/menu.xml)
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu); // ← Asegúrate que se llame menu.xml
+        return true;
+    }
+
+    // Manejar las acciones del menú
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.mnxNuevo) {
+            Intent intent = new Intent(this, AgregarTarea.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.mnxModificar) {
+            Toast.makeText(this, "Modificar tarea (aún no implementado)", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.mnxEliminar) {
+            Toast.makeText(this, "Eliminar tarea (aún no implementado)", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
+
