@@ -2,6 +2,8 @@ package com.example.proyectofinal;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,14 +49,27 @@ public class AgregarTarea extends AppCompatActivity {
             return;
         }
 
-        ContentValues valores = new ContentValues();
-        valores.put("titulo", titulo);
-        valores.put("descripcion", descripcion);
-        valores.put("grupo", grupo);
-        valores.put("fecha_limite", fecha);
-        valores.put("realizada", realizada ? 1 : 0);
+        SQLiteDatabase DBTareas = dbHelper.getWritableDatabase();
 
-        long id = dbHelper.getWritableDatabase().insert(DBTareas.TABLA_TAREAS, null, valores);
+        // Verificar si el grupo ya existe
+        Cursor cursor = DBTareas.rawQuery("SELECT * FROM " + DBTareas.TABLA_GRUPO + " WHERE nombre = ?", new String[]{grupo});
+        if (!cursor.moveToFirst()) {
+            // Grupo no existe, lo insertamos
+            ContentValues valoresGrupo = new ContentValues();
+            valoresGrupo.put("nombre", grupo);
+            DBTareas.insert(DBTareas.TABLA_GRUPO, null, valoresGrupo);
+        }
+        cursor.close();
+
+        // Insertar la tarea
+        ContentValues valores = new ContentValues();
+        valores.put(DBTareas.COLUMNA_TITULO, titulo);
+        valores.put(DBTareas.COLUMNA_DESCRIPCION, descripcion);
+        valores.put(DBTareas.COLUMNA_GRUPO, grupo);
+        valores.put(DBTareas.COLUMNA_FECHA_LIMITE, fecha);
+        valores.put(DBTareas.COLUMNA_REALIZADA, realizada ? 1 : 0);
+
+        long id = DBTareas.insert(DBTareas.TABLA_TAREAS, null, valores);
 
         if (id > 0) {
             Toast.makeText(this, "Tarea guardada correctamente", Toast.LENGTH_SHORT).show();
@@ -64,14 +79,12 @@ public class AgregarTarea extends AppCompatActivity {
         }
     }
 
-    // Agrega el menú a esta actividad
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu); // Asegúrate de que el archivo se llame "menu.xml" en res/menu
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
-    // Manejo de las opciones del menú
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -90,4 +103,6 @@ public class AgregarTarea extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
+
 

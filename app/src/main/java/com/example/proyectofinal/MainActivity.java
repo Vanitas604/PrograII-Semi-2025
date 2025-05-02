@@ -8,7 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
@@ -21,11 +23,16 @@ public class MainActivity extends AppCompatActivity {
     Button btnAgregar, btnGrupos;
 
     DBTareas dbHelper;
+    Tareas selectedTarea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // Lo haremos con RelativeLayout
+        setContentView(R.layout.activity_main);
+
+        // Configurar Toolbar como ActionBar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         recyclerTareas = findViewById(R.id.recyclerTareas);
         btnAgregar = findViewById(R.id.btnAgregar);
@@ -35,7 +42,10 @@ public class MainActivity extends AppCompatActivity {
         listaTareas = new ArrayList<>();
 
         recyclerTareas.setLayoutManager(new LinearLayoutManager(this));
-        adaptador = new AdaptadorTareas(this, listaTareas);
+        adaptador = new AdaptadorTareas(this, listaTareas, tarea -> {
+            selectedTarea = tarea;
+            Toast.makeText(this, "Seleccionado: " + tarea.getTitulo(), Toast.LENGTH_SHORT).show();
+        });
         recyclerTareas.setAdapter(adaptador);
 
         cargarTareas();
@@ -71,33 +81,59 @@ public class MainActivity extends AppCompatActivity {
 
         cursor.close();
         adaptador.notifyDataSetChanged();
+        selectedTarea = null;
     }
 
-    // Inflar el menú (usa tu archivo res/menu/menu.xml)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu); // ← Asegúrate que se llame menu.xml
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
-    // Manejar las acciones del menú
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.mnxNuevo) {
-            Intent intent = new Intent(this, AgregarTarea.class);
-            startActivity(intent);
+            startActivity(new Intent(this, AgregarTarea.class));
             return true;
         } else if (id == R.id.mnxModificar) {
-            Toast.makeText(this, "Modificar tarea (aún no implementado)", Toast.LENGTH_SHORT).show();
+            if (selectedTarea != null) {
+                Intent intent = new Intent(this, AgregarTarea.class);
+                intent.putExtra("id", selectedTarea.getId());
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Selecciona una tarea para modificar", Toast.LENGTH_SHORT).show();
+            }
             return true;
         } else if (id == R.id.mnxEliminar) {
-            Toast.makeText(this, "Eliminar tarea (aún no implementado)", Toast.LENGTH_SHORT).show();
+            if (selectedTarea != null) {
+                showDeleteConfirmationDialog(selectedTarea);
+            } else {
+                Toast.makeText(this, "Selecciona una tarea para eliminar", Toast.LENGTH_SHORT).show();
+            }
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void showDeleteConfirmationDialog(Tareas tarea) {
+        new AlertDialog.Builder(this)
+                .setTitle("Eliminar Tarea")
+                .setMessage("¿Estás seguro de que deseas eliminar esta tarea?")
+                .setPositiveButton("Eliminar", (dialog, which) -> deleteTarea(tarea))
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void deleteTarea(Tareas tarea) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete(DBTareas.TABLA_TAREAS, "id = ?", new String[]{String.valueOf(tarea.getId())});
+        cargarTareas();
+    }
 }
+
+
+
 

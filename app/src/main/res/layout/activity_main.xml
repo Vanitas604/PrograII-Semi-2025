@@ -5,28 +5,41 @@
     android:padding="16dp"
     android:background="@android:color/white">
 
+    <!-- Toolbar personalizado -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:layout_alignParentTop="true" />
+
+    <!-- Botón de Grupos -->
     <Button
         android:id="@+id/btnGrupos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Grupos"
+        android:layout_below="@id/toolbar"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
+        android:layout_marginTop="8dp" />
 
+    <!-- Botón Agregar Tarea -->
     <Button
         android:id="@+id/btnAgregar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Agregar Tarea"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@id/btnGrupos" />
+        android:layout_alignTop="@id/btnGrupos"
+        android:layout_alignParentEnd="true" />
 
+    <!-- RecyclerView para mostrar las tareas -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerTareas"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/btnGrupos"
         android:layout_marginTop="16dp" />
-
 </RelativeLayout>
+
 

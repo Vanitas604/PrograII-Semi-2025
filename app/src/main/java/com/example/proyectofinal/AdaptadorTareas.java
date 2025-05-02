@@ -14,10 +14,17 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
 
     private Context context;
     private List<Tareas> listaTareas;
+    private OnTareaClickListener listener;
 
-    public AdaptadorTareas(Context context, List<Tareas> listaTareas) {
+    // Interfaz para notificar a MainActivity sobre la tarea seleccionada
+    public interface OnTareaClickListener {
+        void onTareaClick(Tareas tarea);
+    }
+
+    public AdaptadorTareas(Context context, List<Tareas> listaTareas, OnTareaClickListener listener) {
         this.context = context;
         this.listaTareas = listaTareas;
+        this.listener = listener;
     }
 
     @NonNull
@@ -35,6 +42,13 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
         holder.txtGrupo.setText(tareas.getGrupo());
         holder.txtFechaLimite.setText(tareas.getFechaLimite());
         holder.chkRealizada.setChecked(tareas.isRealizada());
+
+        // Al hacer clic en el ítem, se comunica a MainActivity la tarea seleccionada
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onTareaClick(tareas);
+            }
+        });
     }
 
     @Override
@@ -56,3 +70,6 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
         }
     }
 }
+
+
+

@@ -1,57 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp"
-    android:background="@android:color/white"
-    android:layout_marginBottom="8dp">
+    android:layout_margin="8dp"
+    android:elevation="4dp">
 
-    <TextView
-        android:id="@+id/txtTitulo"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Título de la tarea"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="#000000" />
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/txtDescripcion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtTitulo"
-        android:text="Descripción de la tarea"
-        android:textSize="14sp"
-        android:textColor="#555555"
-        android:layout_marginTop="4dp" />
+        <TextView
+            android:id="@+id/txtTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Título"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/txtGrupo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtDescripcion"
-        android:text="Grupo"
-        android:textSize="14sp"
-        android:textColor="#777777"
-        android:layout_marginTop="4dp" />
+        <TextView
+            android:id="@+id/txtDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Descripción"
+            android:textSize="14sp"/>
 
-    <TextView
-        android:id="@+id/txtFechaLimite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtGrupo"
-        android:text="Fecha límite"
-        android:textSize="14sp"
-        android:textColor="#999999"
-        android:layout_marginTop="4dp" />
+        <TextView
+            android:id="@+id/txtGrupo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Grupo"
+            android:textSize="14sp"/>
 
-    <CheckBox
-        android:id="@+id/chkRealizada"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Realizada"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/txtTitulo" />
+        <TextView
+            android:id="@+id/txtFechaLimite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fecha Límite"
+            android:textSize="12sp"/>
 
-</RelativeLayout>
+        <CheckBox
+            android:id="@+id/chkRealizada"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Realizada"/>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+
