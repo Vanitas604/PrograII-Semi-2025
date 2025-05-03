@@ -2,23 +2,21 @@ package com.example.proyectofinal;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.*;
-import androidx.appcompat.app.AppCompatActivity;
-import java.util.ArrayList;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.content.Intent;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
 
 public class Lista_Grupos extends AppCompatActivity {
 
-    ListView listaGrupos;
-    Button btnAgregarGrupo;
-    ArrayAdapter<String> adapter;
-    ArrayList<String> listaNombres;
-    ArrayList<Grupo> listaObjetos;
-
+    RecyclerView recyclerGrupos;
+    AdaptadorGrupos adaptador;
+    ArrayList<Grupo> listaGrupos;
     DBTareas dbHelper;
 
     @Override
@@ -26,40 +24,33 @@ public class Lista_Grupos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_grupos);
 
-        listaGrupos = findViewById(R.id.listaGrupos);
-        btnAgregarGrupo = findViewById(R.id.btnAgregarGrupo);
-
+        recyclerGrupos = findViewById(R.id.recyclerGrupos);
         dbHelper = new DBTareas(this);
+
+        listaGrupos = new ArrayList<>();
+        recyclerGrupos.setLayoutManager(new LinearLayoutManager(this));
+        adaptador = new AdaptadorGrupos(listaGrupos, grupo -> {
+            Toast.makeText(this, "Seleccionado: " + grupo.getNombre(), Toast.LENGTH_SHORT).show();
+        });
+        recyclerGrupos.setAdapter(adaptador);
 
         cargarGrupos();
 
-        btnAgregarGrupo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mostrarDialogoAgregar();
-            }
-        });
+        findViewById(R.id.btnAgregarGrupo).setOnClickListener(view -> mostrarDialogoAgregar());
     }
 
     private void cargarGrupos() {
-        listaNombres = new ArrayList<>();
-        listaObjetos = new ArrayList<>();
-
+        listaGrupos.clear();
         Cursor cursor = dbHelper.getReadableDatabase().rawQuery("SELECT * FROM " + DBTareas.TABLA_GRUPO, null);
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(0);
                 String nombre = cursor.getString(1);
-
-                listaObjetos.add(new Grupo(id, nombre));
-                listaNombres.add(nombre);
+                listaGrupos.add(new Grupo(id, nombre));
             } while (cursor.moveToNext());
         }
-
         cursor.close();
-
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listaNombres);
-        listaGrupos.setAdapter(adapter);
+        adaptador.notifyDataSetChanged();
     }
 
     private void mostrarDialogoAgregar() {
@@ -72,8 +63,10 @@ public class Lista_Grupos extends AppCompatActivity {
                 .setPositiveButton("Guardar", (dialog, which) -> {
                     String nombre = input.getText().toString().trim();
                     if (!nombre.isEmpty()) {
-                        dbHelper.getWritableDatabase().execSQL("INSERT INTO " + DBTareas.TABLA_GRUPO + " (nombre) VALUES (?)", new Object[]{nombre});
-                        cargarGrupos(); // Recargar lista
+                        dbHelper.getWritableDatabase().execSQL(
+                                "INSERT INTO " + DBTareas.TABLA_GRUPO + " (nombre) VALUES (?)",
+                                new Object[]{nombre});
+                        cargarGrupos();
                     } else {
                         Toast.makeText(this, "El nombre no puede estar vacío", Toast.LENGTH_SHORT).show();
                     }
@@ -82,10 +75,9 @@ public class Lista_Grupos extends AppCompatActivity {
                 .show();
     }
 
-    // ===== MÉTODOS DEL MENÚ =====
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu); // Asegúrate de que se llame menu.xml
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
@@ -96,16 +88,11 @@ public class Lista_Grupos extends AppCompatActivity {
         if (id == R.id.mnxNuevo) {
             startActivity(new Intent(this, AgregarTarea.class));
             return true;
-        } else if (id == R.id.mnxModificar) {
-            Toast.makeText(this, "Modificar tarea (aún no implementado)", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (id == R.id.mnxEliminar) {
-            Toast.makeText(this, "Eliminar tarea (aún no implementado)", Toast.LENGTH_SHORT).show();
-            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 }
+
 
 

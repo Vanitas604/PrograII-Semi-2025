@@ -49,15 +49,15 @@ public class AgregarTarea extends AppCompatActivity {
             return;
         }
 
-        SQLiteDatabase DBTareas = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         // Verificar si el grupo ya existe
-        Cursor cursor = DBTareas.rawQuery("SELECT * FROM " + DBTareas.TABLA_GRUPO + " WHERE nombre = ?", new String[]{grupo});
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DBTareas.TABLA_GRUPO + " WHERE nombre = ?", new String[]{grupo});
         if (!cursor.moveToFirst()) {
             // Grupo no existe, lo insertamos
             ContentValues valoresGrupo = new ContentValues();
             valoresGrupo.put("nombre", grupo);
-            DBTareas.insert(DBTareas.TABLA_GRUPO, null, valoresGrupo);
+            db.insert(DBTareas.TABLA_GRUPO, null, valoresGrupo);
         }
         cursor.close();
 
@@ -69,7 +69,7 @@ public class AgregarTarea extends AppCompatActivity {
         valores.put(DBTareas.COLUMNA_FECHA_LIMITE, fecha);
         valores.put(DBTareas.COLUMNA_REALIZADA, realizada ? 1 : 0);
 
-        long id = DBTareas.insert(DBTareas.TABLA_TAREAS, null, valores);
+        long id = db.insert(DBTareas.TABLA_TAREAS, null, valores);
 
         if (id > 0) {
             Toast.makeText(this, "Tarea guardada correctamente", Toast.LENGTH_SHORT).show();
@@ -103,6 +103,7 @@ public class AgregarTarea extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
 
 
 
