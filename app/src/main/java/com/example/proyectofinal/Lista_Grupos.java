@@ -14,42 +14,59 @@ import java.util.ArrayList;
 
 public class Lista_Grupos extends AppCompatActivity {
 
-    RecyclerView recyclerGrupos;
-    AdaptadorGrupos adaptador;
-    ArrayList<Grupo> listaGrupos;
-    DBTareas dbHelper;
+    private RecyclerView recyclerGrupos;
+    private AdaptadorGrupos adaptador;
+    private ArrayList<Grupo> listaGrupos;
+    private DBTareas dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_grupos);
 
+        // Inicialización de vistas
         recyclerGrupos = findViewById(R.id.recyclerGrupos);
         dbHelper = new DBTareas(this);
 
+        // Configuración del RecyclerView
         listaGrupos = new ArrayList<>();
         recyclerGrupos.setLayoutManager(new LinearLayoutManager(this));
-        adaptador = new AdaptadorGrupos(listaGrupos, grupo -> {
-            Toast.makeText(this, "Seleccionado: " + grupo.getNombre(), Toast.LENGTH_SHORT).show();
+
+        adaptador = new AdaptadorGrupos(this, listaGrupos, new AdaptadorGrupos.OnGrupoClickListener() {
+            @Override
+            public void onModificar(Grupo grupo) {
+                mostrarDialogoEditar(grupo);
+            }
+
+            @Override
+            public void onEliminar(Grupo grupo) {
+                eliminarGrupo(grupo);
+            }
         });
+
         recyclerGrupos.setAdapter(adaptador);
 
+        // Cargar datos iniciales
         cargarGrupos();
 
+        // Listeners
         findViewById(R.id.btnAgregarGrupo).setOnClickListener(view -> mostrarDialogoAgregar());
     }
 
     private void cargarGrupos() {
         listaGrupos.clear();
-        Cursor cursor = dbHelper.getReadableDatabase().rawQuery("SELECT * FROM " + DBTareas.TABLA_GRUPO, null);
-        if (cursor.moveToFirst()) {
-            do {
-                int id = cursor.getInt(0);
-                String nombre = cursor.getString(1);
-                listaGrupos.add(new Grupo(id, nombre));
-            } while (cursor.moveToNext());
+        try (Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
+                "SELECT id, nombre FROM " + DBTareas.TABLA_GRUPO, null)) {
+
+            if (cursor.moveToFirst()) {
+                do {
+                    listaGrupos.add(new Grupo(
+                            cursor.getInt(0),    // id
+                            cursor.getString(1) // nombre
+                    ));
+                } while (cursor.moveToNext());
+            }
         }
-        cursor.close();
         adaptador.notifyDataSetChanged();
     }
 
@@ -67,9 +84,46 @@ public class Lista_Grupos extends AppCompatActivity {
                                 "INSERT INTO " + DBTareas.TABLA_GRUPO + " (nombre) VALUES (?)",
                                 new Object[]{nombre});
                         cargarGrupos();
+                        Toast.makeText(this, "Grupo creado", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, "El nombre no puede estar vacío", Toast.LENGTH_SHORT).show();
                     }
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void mostrarDialogoEditar(Grupo grupo) {
+        final EditText input = new EditText(this);
+        input.setText(grupo.getNombre());
+
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Editar Grupo")
+                .setView(input)
+                .setPositiveButton("Guardar", (dialog, which) -> {
+                    String nuevoNombre = input.getText().toString().trim();
+                    if (!nuevoNombre.isEmpty()) {
+                        dbHelper.getWritableDatabase().execSQL(
+                                "UPDATE " + DBTareas.TABLA_GRUPO + " SET nombre = ? WHERE id = ?",
+                                new Object[]{nuevoNombre, grupo.getId()});
+                        cargarGrupos();
+                        Toast.makeText(this, "Grupo actualizado", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void eliminarGrupo(Grupo grupo) {
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Eliminar Grupo")
+                .setMessage("¿Estás seguro de eliminar el grupo " + grupo.getNombre() + "?")
+                .setPositiveButton("Eliminar", (dialog, which) -> {
+                    dbHelper.getWritableDatabase().execSQL(
+                            "DELETE FROM " + DBTareas.TABLA_GRUPO + " WHERE id = ?",
+                            new Object[]{grupo.getId()});
+                    cargarGrupos();
+                    Toast.makeText(this, "Grupo eliminado", Toast.LENGTH_SHORT).show();
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();
@@ -83,14 +137,17 @@ public class Lista_Grupos extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.mnxNuevo) {
+        if (item.getItemId() == R.id.mnxNuevo) {
             startActivity(new Intent(this, AgregarTarea.class));
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        dbHelper.close();
+        super.onDestroy();
     }
 }
 
