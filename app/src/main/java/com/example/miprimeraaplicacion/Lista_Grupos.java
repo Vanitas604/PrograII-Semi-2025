@@ -7,9 +7,12 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.content.Intent;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 
 public class Lista_Grupos extends AppCompatActivity {
@@ -23,6 +26,10 @@ public class Lista_Grupos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_grupos);
+
+        // Configurar Toolbar como ActionBar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // Inicialización de vistas
         recyclerGrupos = findViewById(R.id.recyclerGrupos);
@@ -61,8 +68,8 @@ public class Lista_Grupos extends AppCompatActivity {
             if (cursor.moveToFirst()) {
                 do {
                     listaGrupos.add(new Grupo(
-                            cursor.getInt(0),    // id
-                            cursor.getString(1) // nombre
+                            cursor.getInt(0),
+                            cursor.getString(1)
                     ));
                 } while (cursor.moveToNext());
             }

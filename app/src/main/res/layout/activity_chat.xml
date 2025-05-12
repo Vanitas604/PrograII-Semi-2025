@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121B22">
+
+    <!-- Encabezado del chat -->
+    <TextView
+        android:id="@+id/txtTituloChat"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#1F2C34"
+        android:text="Chat con Usuario"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:paddingStart="16dp"
+        android:gravity="center_vertical" />
+
+    <!-- Lista de mensajes -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerMensajes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/txtTituloChat"
+        android:layout_above="@+id/layoutEntrada"
+        android:padding="8dp" />
+
+    <!-- Barra inferior con campo de texto + botón -->
+    <RelativeLayout
+        android:id="@+id/layoutEntrada"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#1F2C34"
+        android:padding="8dp">
+
+        <EditText
+            android:id="@+id/etMensaje"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_toStartOf="@+id/btnEnviar"
+            android:layout_toLeftOf="@+id/btnEnviar"
+            android:layout_centerVertical="true"
+            android:hint="Escribe un mensaje"
+            android:textColor="#ffffff"
+            android:textColorHint="#BBBBBB"
+            android:background="@drawable/edittext_bg"
+            android:padding="10dp" />
+
+        <ImageButton
+            android:id="@+id/btnEnviar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@android:drawable/ic_menu_send"
+            android:tint="#25D366"
+            android:background="@android:color/transparent"
+            android:contentDescription="Enviar mensaje" />
+    </RelativeLayout>
+</RelativeLayout>
