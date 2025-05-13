@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
     <EditText
         android:id="@+id/txtNombre"
         android:hint="Nombre"
@@ -46,7 +45,7 @@
         android:id="@+id/txtDui"
         android:hint="Dui"
         android:layout_below="@id/txtEmail"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_width="match_parent"
@@ -69,10 +68,11 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabListaAmigos"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@android:drawable/ic_menu_revert"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
 </RelativeLayout>
