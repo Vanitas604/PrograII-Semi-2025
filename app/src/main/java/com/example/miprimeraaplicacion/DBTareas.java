@@ -1,9 +1,13 @@
 package com.example.miprimeraaplicacion;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBTareas extends SQLiteOpenHelper {
 
@@ -32,7 +36,7 @@ public class DBTareas extends SQLiteOpenHelper {
                 COLUMNA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMNA_TITULO + " TEXT, " +
                 COLUMNA_DESCRIPCION + " TEXT, " +
-                COLUMNA_GRUPO + " TEXT, " +
+                COLUMNA_GRUPO + " INTEGER, " +
                 COLUMNA_FECHA_LIMITE + " TEXT, " +
                 COLUMNA_REALIZADA + " INTEGER)";
         db.execSQL(CREATE_TABLE_TAREAS);
@@ -46,7 +50,7 @@ public class DBTareas extends SQLiteOpenHelper {
         // Crear tabla usuarios
         String CREATE_TABLE_USUARIOS = "CREATE TABLE " + TABLA_USUARIOS + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "usuario TEXT NOT NULL UNIQUE, " +  // UNIQUE para evitar duplicados
+                "usuario TEXT NOT NULL UNIQUE, " +
                 "contrasena TEXT NOT NULL)";
         db.execSQL(CREATE_TABLE_USUARIOS);
 
@@ -62,6 +66,7 @@ public class DBTareas extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // --- Gestión de usuarios ---
     public boolean validarUsuario(String usuario, String contrasena) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLA_USUARIOS +
@@ -88,6 +93,75 @@ public class DBTareas extends SQLiteOpenHelper {
         return existe;
     }
 
+    // --- Gestión de grupos ---
+    public List<Grupo> obtenerGrupos() {
+        List<Grupo> listaGrupos = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLA_GRUPO, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Grupo grupo = new Grupo();
+                grupo.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                grupo.setNombre(cursor.getString(cursor.getColumnIndexOrThrow("nombre")));
+                listaGrupos.add(grupo);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return listaGrupos;
+    }
+
+    public long insertarGrupo(String nombre) {
+        SQLiteDatabase DBTareas = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("nombre", nombre);
+        long id = DBTareas.insert(TABLA_GRUPO, null, values);
+        DBTareas.close();
+        return id;
+    }
+
+    // --- Gestión de tareas ---
+    public long insertarTarea(String titulo, String descripcion, int grupoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMNA_TITULO, titulo);
+        values.put(COLUMNA_DESCRIPCION, descripcion);
+        values.put(COLUMNA_GRUPO, grupoId);
+        values.put(COLUMNA_FECHA_LIMITE, ""); // Puedes cambiar por una fecha real si deseas
+        values.put(COLUMNA_REALIZADA, 0); // 0 = no realizada
+        long id = db.insert(TABLA_TAREAS, null, values);
+        db.close();
+        return id;
+    }
+
+    public List<Tareas> obtenerTareasPorGrupo(int grupoId) {
+        List<Tareas> listaTareas = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLA_TAREAS +
+                " WHERE " + COLUMNA_GRUPO + " = ?", new String[]{String.valueOf(grupoId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Tareas tarea = new Tareas();
+                tarea.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMNA_ID)));
+                tarea.setTitulo(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNA_TITULO)));
+                tarea.setDescripcion(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNA_DESCRIPCION)));
+                tarea.setGrupo(String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMNA_GRUPO))));
+                tarea.setFechaLimite(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNA_FECHA_LIMITE)));
+                tarea.setRealizada(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMNA_REALIZADA)) == 1);
+                listaTareas.add(tarea);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return listaTareas;
+    }
 }
+
+
+
 
 

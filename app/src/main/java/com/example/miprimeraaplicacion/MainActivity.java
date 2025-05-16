@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Configurar Toolbar como ActionBar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -68,17 +67,20 @@ public class MainActivity extends AppCompatActivity {
     private void cargarTareas() {
         listaTareas.clear();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBTareas.TABLA_TAREAS, null);
+        Cursor cursor = db.rawQuery("SELECT id, titulo, descripcion, grupo, fecha_limite, realizada FROM " + DBTareas.TABLA_TAREAS, null);
 
         if (cursor.moveToFirst()) {
             do {
-                Tareas tarea = new Tareas();
-                tarea.setId(cursor.getInt(0));
-                tarea.setTitulo(cursor.getString(1));
-                tarea.setDescripcion(cursor.getString(2));
-                tarea.setGrupo(cursor.getString(3));
-                tarea.setFechaLimite(cursor.getString(4));
-                tarea.setRealizada(cursor.getInt(5) == 1);
+                int id = cursor.getInt(0);
+                String titulo = cursor.getString(1);
+                String descripcion = cursor.getString(2);
+                int grupoId = cursor.getInt(3);
+                String fechaLimite = cursor.getString(4);
+                boolean realizada = cursor.getInt(5) == 1;
+
+                String nombreGrupo = obtenerNombreGrupoPorId(grupoId);
+
+                Tareas tarea = new Tareas(id, titulo, descripcion, nombreGrupo, fechaLimite, realizada);
                 listaTareas.add(tarea);
             } while (cursor.moveToNext());
         }
@@ -88,9 +90,20 @@ public class MainActivity extends AppCompatActivity {
         selectedTarea = null;
     }
 
+    private String obtenerNombreGrupoPorId(int grupoId) {
+        String nombreGrupo = "Sin grupo";
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT nombre FROM grupos WHERE id = ?", new String[]{String.valueOf(grupoId)});
+        if (cursor.moveToFirst()) {
+            nombreGrupo = cursor.getString(0);
+        }
+        cursor.close();
+        return nombreGrupo;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu); // Asegúrate de que tu archivo menu.xml incluya la opción Ajustes
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
@@ -118,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         } else if (id == R.id.mnxAjustes) {
-            // Abrir la actividad de ajustes
             startActivity(new Intent(this, AjustesActivity.class));
             return true;
         }
@@ -164,7 +176,13 @@ public class MainActivity extends AppCompatActivity {
         popup.show();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cargarTareas(); // Recargar tareas al volver del formulario o de grupos
+    }
 }
+
 
 
 

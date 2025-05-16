@@ -41,6 +41,11 @@ public class Lista_Grupos extends AppCompatActivity {
 
         adaptador = new AdaptadorGrupos(this, listaGrupos, new AdaptadorGrupos.OnGrupoClickListener() {
             @Override
+            public void onClick(Grupo grupo) {
+
+            }
+
+            @Override
             public void onModificar(Grupo grupo) {
                 mostrarDialogoEditar(grupo);
             }

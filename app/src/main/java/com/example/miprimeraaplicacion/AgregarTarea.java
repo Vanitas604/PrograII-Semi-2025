@@ -1,105 +1,89 @@
 package com.example.miprimeraaplicacion;
 
-import android.content.ContentValues;
-import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.List;
 
 public class AgregarTarea extends AppCompatActivity {
 
-    EditText edtTitulo, edtDescripcion, edtGrupo, edtFecha;
-    CheckBox chkRealizada;
-    Button btnGuardar, btnCancelar;
-
-    DBTareas dbHelper;
+    private EditText txtTarea, txtDescripcion;
+    private Spinner spinnerGrupos;
+    private Button btnGuardar, btnCancelar;
+    private DBTareas dbHelper;
+    private List<Grupo> listaGrupos;
+    private ArrayAdapter<Grupo> adaptadorGrupos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agregar_tarea);
 
-        edtTitulo = findViewById(R.id.edtTitulo);
-        edtDescripcion = findViewById(R.id.edtDescripcion);
-        edtGrupo = findViewById(R.id.edtGrupo);
-        edtFecha = findViewById(R.id.edtFecha);
-        chkRealizada = findViewById(R.id.chkRealizada);
+        txtTarea = findViewById(R.id.edtTitulo);
+        txtDescripcion = findViewById(R.id.edtDescripcion);
+        spinnerGrupos = findViewById(R.id.spinnerGrupo);
         btnGuardar = findViewById(R.id.btnGuardar);
-        btnCancelar = findViewById(R.id.btnCancelar);
+        btnCancelar = findViewById(R.id.btnCancelar); // Asegúrate de que exista en tu XML
 
         dbHelper = new DBTareas(this);
 
-        btnGuardar.setOnClickListener(v -> guardarTarea());
-        btnCancelar.setOnClickListener(v -> finish());
+        cargarGruposEnSpinner();
+
+        btnGuardar.setOnClickListener(view -> guardarTarea());
+
+        btnCancelar.setOnClickListener(view -> finish());
+    }
+
+    private void cargarGruposEnSpinner() {
+        listaGrupos = dbHelper.obtenerGrupos();
+
+        adaptadorGrupos = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listaGrupos);
+        adaptadorGrupos.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGrupos.setAdapter(adaptadorGrupos);
     }
 
     private void guardarTarea() {
-        String titulo = edtTitulo.getText().toString();
-        String descripcion = edtDescripcion.getText().toString();
-        String grupo = edtGrupo.getText().toString();
-        String fecha = edtFecha.getText().toString();
-        boolean realizada = chkRealizada.isChecked();
+        String nombreTarea = txtTarea.getText().toString().trim();
+        String descripcion = txtDescripcion.getText().toString().trim();
 
-        if (titulo.isEmpty()) {
-            Toast.makeText(this, "El título es obligatorio", Toast.LENGTH_SHORT).show();
+        if (nombreTarea.isEmpty() || descripcion.isEmpty()) {
+            Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        // Verificar si el grupo ya existe
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBTareas.TABLA_GRUPO + " WHERE nombre = ?", new String[]{grupo});
-        if (!cursor.moveToFirst()) {
-            // Grupo no existe, lo insertamos
-            ContentValues valoresGrupo = new ContentValues();
-            valoresGrupo.put("nombre", grupo);
-            db.insert(DBTareas.TABLA_GRUPO, null, valoresGrupo);
+        if (listaGrupos == null || listaGrupos.isEmpty()) {
+            Toast.makeText(this, "No hay grupos disponibles", Toast.LENGTH_SHORT).show();
+            return;
         }
-        cursor.close();
 
-        // Insertar la tarea
-        ContentValues valores = new ContentValues();
-        valores.put(DBTareas.COLUMNA_TITULO, titulo);
-        valores.put(DBTareas.COLUMNA_DESCRIPCION, descripcion);
-        valores.put(DBTareas.COLUMNA_GRUPO, grupo);
-        valores.put(DBTareas.COLUMNA_FECHA_LIMITE, fecha);
-        valores.put(DBTareas.COLUMNA_REALIZADA, realizada ? 1 : 0);
+        int posicionGrupo = spinnerGrupos.getSelectedItemPosition();
+        int grupoId = listaGrupos.get(posicionGrupo).getId();
 
-        long id = db.insert(DBTareas.TABLA_TAREAS, null, valores);
+        long resultado = dbHelper.insertarTarea(nombreTarea, descripcion, grupoId);
 
-        if (id > 0) {
-            Toast.makeText(this, "Tarea guardada correctamente", Toast.LENGTH_SHORT).show();
+        if (resultado != -1) {
+            Toast.makeText(this, "Tarea guardada", Toast.LENGTH_SHORT).show();
             finish();
         } else {
-            Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error al guardar la tarea", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.mnxNuevo) {
-            startActivity(new Intent(this, AgregarTarea.class));
-            return true;
-        } else if (id == R.id.mnxModificar) {
-            Toast.makeText(this, "Modificar seleccionado", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (id == R.id.mnxEliminar) {
-            Toast.makeText(this, "Eliminar seleccionado", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    protected void onDestroy() {
+        dbHelper.close();
+        super.onDestroy();
     }
 }
+
+
+
+
+
+

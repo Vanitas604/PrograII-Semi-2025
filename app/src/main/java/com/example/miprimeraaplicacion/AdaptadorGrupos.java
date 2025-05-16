@@ -1,6 +1,5 @@
 package com.example.miprimeraaplicacion;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -19,8 +18,9 @@ public class AdaptadorGrupos extends RecyclerView.Adapter<AdaptadorGrupos.ViewHo
     private final OnGrupoClickListener listener;
 
     public interface OnGrupoClickListener {
-        void onModificar(Grupo grupo);
-        void onEliminar(Grupo grupo);
+        void onClick(Grupo grupo);        // Click simple para ver tareas
+        void onModificar(Grupo grupo);    // Modificar grupo (menú contextual)
+        void onEliminar(Grupo grupo);     // Eliminar grupo (menú contextual)
     }
 
     public AdaptadorGrupos(Context context, List<Grupo> listaGrupos, OnGrupoClickListener listener) {
@@ -41,6 +41,12 @@ public class AdaptadorGrupos extends RecyclerView.Adapter<AdaptadorGrupos.ViewHo
         Grupo grupo = listaGrupos.get(position);
         holder.txtNombreGrupo.setText(grupo.getNombre());
 
+        // Click simple para abrir actividades con tareas del grupo
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onClick(grupo);
+        });
+
+        // Long click para mostrar menú contextual (modificar, eliminar)
         holder.itemView.setOnLongClickListener(v -> {
             mostrarPopupMenu(v, grupo);
             return true;
@@ -82,3 +88,4 @@ public class AdaptadorGrupos extends RecyclerView.Adapter<AdaptadorGrupos.ViewHo
         }
     }
 }
+
