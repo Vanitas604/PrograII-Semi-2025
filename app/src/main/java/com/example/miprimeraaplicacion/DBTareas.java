@@ -159,7 +159,25 @@ public class DBTareas extends SQLiteOpenHelper {
         db.close();
         return listaTareas;
     }
+
+    // ✅ Método para actualizar si una tarea está realizada o no
+    public boolean actualizarEstadoRealizada(int idTarea, boolean realizada) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues valores = new ContentValues();
+        valores.put(COLUMNA_REALIZADA, realizada ? 1 : 0);
+
+        int filas = db.update(
+                TABLA_TAREAS,
+                valores,
+                COLUMNA_ID + " = ?",
+                new String[]{String.valueOf(idTarea)}
+        );
+
+        db.close();
+        return filas > 0;
+    }
 }
+
 
 
 
