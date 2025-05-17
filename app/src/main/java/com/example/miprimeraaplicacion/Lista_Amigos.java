@@ -17,10 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -35,10 +32,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-@@ -37,20 +43,20 @@ public class Lista_amigos extends Activity {
-
+public class lista_amigos extends Activity {
     DB db;
-    final ArrayList<amigos> alAmigos = new ArrayList<amigos>();
+    final ArrayList<amigos> alAmigos = new ArrayList<>(
+
+    );
     final ArrayList<amigos> alAmigosCopia = new ArrayList<amigos>();
     JSONArray jsonArray = new JSONArray();
     JSONObject jsonObject;
@@ -52,9 +50,7 @@ import java.util.ArrayList;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_amigos);
-
         parametros.putString("accion", "nuevo");
-
         fab = findViewById(R.id.fabAgregarAmigo);
         fab.setOnClickListener(view -> abriVentana());
         listarDatos();
@@ -181,8 +177,8 @@ import java.util.ArrayList;
                             jsonObject.put("email", amigo.getEmail());
                             jsonObject.put("dui", amigo.getDui());
                             jsonObject.put("urlFoto", amigo.getFoto());
+                            jsonObject.put("urlCompletaFotoFirestore", amigo.getUrlCompletaFotoFirestore());
                             jsonObject.put("miToken", amigo.getMiToken());
-
                             jsonArray.put(jsonObject);
                         }
                         mostrarDatosAmigos();
@@ -192,7 +188,6 @@ import java.util.ArrayList;
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
                 }
             });
         }catch (Exception e){
@@ -205,7 +200,6 @@ import java.util.ArrayList;
                 ltsAmigos = findViewById(R.id.ltsAmigos);
                 alAmigos.clear();
                 alAmigosCopia.clear();
-
                 for (int i=0; i<jsonArray.length(); i++){
                     jsonObject = jsonArray.getJSONObject(i);
                     misAmigos = new amigos(
@@ -263,3 +257,4 @@ import java.util.ArrayList;
     private void mostrarMsg(String msg){
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
+}
