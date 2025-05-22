@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -23,7 +22,10 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".Lista_Amigos"
+            android:name=".chats"
+            android:exported="false" />
+        <activity
+            android:name=".lista_amigos"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

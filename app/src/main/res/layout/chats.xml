@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Botón Atrás -->
+    <ImageView
+        android:id="@+id/imgAtras"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/flecha"
+        android:contentDescription="Atrás" />
+
+    <!-- Foto del Amigo -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/crvFotoAmigo"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_toRightOf="@id/imgAtras"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="150dp">
+
+        <ImageView
+            android:id="@+id/imgFotoAmigoChats"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_foreground"
+            android:contentDescription="Foto del amigo" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- Nombre del Amigo -->
+    <TextView
+        android:id="@+id/lblToChats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mi amigo..."
+        android:textSize="16sp"
+        android:layout_toRightOf="@id/crvFotoAmigo"
+        android:layout_marginStart="10dp"
+        android:layout_alignTop="@id/crvFotoAmigo"
+        android:layout_marginTop="15dp" />
+
+    <!-- Lista de Chats -->
+    <ListView
+        android:id="@+id/ltsChats"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/txtMsgChats"
+        android:layout_below="@id/crvFotoAmigo"
+        android:background="@drawable/fondo"
+        android:divider="@null"
+        android:stackFromBottom="true"
+        android:layout_marginTop="10dp" />
+
+    <!-- Campo de Mensaje -->
+    <EditText
+        android:id="@+id/txtMsgChats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@id/btnEnviarMsg"
+        android:hint="Escribe tu mensaje..."
+        android:padding="10dp" />
+
+    <!-- Botón de Enviar -->
+    <ImageButton
+        android:id="@+id/btnEnviarMsg"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:background="@null"
+        android:src="@drawable/enviar"
+        android:contentDescription="Enviar mensaje"
+        android:padding="10dp" />
+
+</RelativeLayout>

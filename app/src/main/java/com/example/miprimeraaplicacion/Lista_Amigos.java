@@ -17,8 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-
-
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,17 +28,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-
-public class lista_amigos extends Activity {
+public class Lista_Amigos extends Activity {
+    Bundle parametros = new Bundle();
+    ListView ltsAmigos;
+    Cursor cAmigos;
     DB db;
-    final ArrayList<amigos> alAmigos = new ArrayList<>(
-
-    );
+    final ArrayList<amigos> alAmigos = new ArrayList<amigos>();
     final ArrayList<amigos> alAmigosCopia = new ArrayList<amigos>();
     JSONArray jsonArray = new JSONArray();
     JSONObject jsonObject;
@@ -50,11 +50,33 @@ public class lista_amigos extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_amigos);
+
+        ltsAmigos = findViewById(R.id.ltsAmigos);
         parametros.putString("accion", "nuevo");
+
         fab = findViewById(R.id.fabAgregarAmigo);
         fab.setOnClickListener(view -> abriVentana());
         listarDatos();
         buscarAmigos();
+        mostrarChats();
+    }
+    private void mostrarChats(){
+        ltsAmigos.setOnItemClickListener( (parent, view, position, id)->{
+            try{
+                Bundle parametros = new Bundle();
+                parametros.putString("nombre", jsonArray.getJSONObject(position).getString("nombre"));
+                parametros.putString("to", jsonArray.getJSONObject(position).getString("to"));
+                parametros.putString("from", jsonArray.getJSONObject(position).getString("from"));
+                parametros.putString("urlFoto", jsonArray.getJSONObject(position).getString("urlFoto"));
+                parametros.putString("urlCompletaFotoFirestore", jsonArray.getJSONObject(position).getString("urlCompletaFotoFirestore"));
+
+                Intent intent = new Intent(getApplicationContext(), chats.class);
+                intent.putExtras(parametros);
+                startActivity(intent);
+            }catch (Exception e){
+                mostrarMsg("Error al abrir el chat: " + e.getMessage());
+            }
+        });
     }
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -142,7 +164,7 @@ public class lista_amigos extends Activity {
                 }else{
                     miToken = tarea.getResult();
                     if( miToken!=null && miToken.length()>0 ){
-                        databaseReference.orderByChild("miToken").equalTo(miToken).addListenerForSingleValueEvent(new ValueEventListener() {
+                        databaseReference.orderByChild("token").equalTo(miToken).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 try{
@@ -169,6 +191,7 @@ public class lista_amigos extends Activity {
                     try{
                         for( DataSnapshot dataSnapshot : snapshot.getChildren() ){
                             amigos amigo = dataSnapshot.getValue(amigos.class);
+
                             jsonObject = new JSONObject();
                             jsonObject.put("idAmigo", amigo.getIdAmigo());
                             jsonObject.put("nombre", amigo.getNombre());
@@ -178,7 +201,8 @@ public class lista_amigos extends Activity {
                             jsonObject.put("dui", amigo.getDui());
                             jsonObject.put("urlFoto", amigo.getFoto());
                             jsonObject.put("urlCompletaFotoFirestore", amigo.getUrlCompletaFotoFirestore());
-                            jsonObject.put("miToken", amigo.getMiToken());
+                            jsonObject.put("to", amigo.getToken());
+                            jsonObject.put("from", miToken);
                             jsonArray.put(jsonObject);
                         }
                         mostrarDatosAmigos();
@@ -197,9 +221,9 @@ public class lista_amigos extends Activity {
     private void mostrarDatosAmigos(){
         try{
             if(jsonArray.length()>0){
-                ltsAmigos = findViewById(R.id.ltsAmigos);
                 alAmigos.clear();
                 alAmigosCopia.clear();
+
                 for (int i=0; i<jsonArray.length(); i++){
                     jsonObject = jsonArray.getJSONObject(i);
                     misAmigos = new amigos(
@@ -211,7 +235,7 @@ public class lista_amigos extends Activity {
                             jsonObject.getString("dui"),
                             jsonObject.getString("urlFoto"),
                             jsonObject.getString("urlCompletaFotoFirestore"),
-                            jsonObject.getString("miToken")
+                            jsonObject.getString("to")
                     );
                     alAmigos.add(misAmigos);
                 }
