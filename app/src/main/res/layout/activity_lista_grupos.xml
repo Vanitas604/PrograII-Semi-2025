@@ -22,4 +22,3 @@
         android:clipToPadding="false"
         android:paddingBottom="16dp"/>
 </RelativeLayout>
-

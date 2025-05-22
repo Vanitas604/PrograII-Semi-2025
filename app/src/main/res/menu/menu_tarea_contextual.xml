@@ -6,4 +6,3 @@
         android:id="@+id/mnxEliminar"
         android:title="Eliminar" />
 </menu>
-

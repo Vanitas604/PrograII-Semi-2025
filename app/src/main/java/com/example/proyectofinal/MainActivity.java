@@ -15,6 +15,7 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         adaptador = new AdaptadorTareas(this, listaTareas, tarea -> {
             selectedTarea = tarea;
             Toast.makeText(this, "Seleccionado: " + tarea.getTitulo(), Toast.LENGTH_SHORT).show();
-        }, this::mostrarMenuFlotante); // Pasamos el método para long click
+        }, this::mostrarMenuFlotante);
         recyclerTareas.setAdapter(adaptador);
 
         cargarTareas();
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.menu, menu); // Asegúrate de que tu archivo menu.xml incluya la opción Ajustes
         return true;
     }
 
@@ -115,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Selecciona una tarea para eliminar", Toast.LENGTH_SHORT).show();
             }
             return true;
+        } else if (id == R.id.mnxAjustes) {
+            // Abrir la actividad de ajustes
+            startActivity(new Intent(this, AjustesActivity.class));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -135,36 +140,29 @@ public class MainActivity extends AppCompatActivity {
         cargarTareas();
     }
 
-    // Método para mostrar el menú flotante cuando se hace un long click en una tarea
     private void mostrarMenuFlotante(View vista, Tareas tarea) {
         selectedTarea = tarea;
 
-        // Crear el PopupMenu y asociarlo a la vista (el item de tarea)
         PopupMenu popup = new PopupMenu(this, vista);
-
-        // Infla el menú contextual con el archivo menu_tarea_contextual.xml
         popup.getMenuInflater().inflate(R.menu.menu_tarea_contextual, popup.getMenu());
 
-        // Configura el comportamiento de las opciones del menú
         popup.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.mnxModificar) {
-                // Si se selecciona "Modificar", se abre la pantalla para editar la tarea
                 Intent intent = new Intent(MainActivity.this, AgregarTarea.class);
                 intent.putExtra("id", tarea.getId());
                 startActivity(intent);
                 return true;
             } else if (id == R.id.mnxEliminar) {
-                // Si se selecciona "Eliminar", muestra el diálogo de confirmación
                 showDeleteConfirmationDialog(tarea);
                 return true;
             }
             return false;
         });
 
-        // Mostrar el menú emergente
         popup.show();
     }
+
 }
 
 
