@@ -1,7 +1,6 @@
 package com.example.miprimeraaplicacion;
 
 import static android.widget.Toast.makeText;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,7 +11,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 
 public class AdaptadorAmigos extends BaseAdapter {
