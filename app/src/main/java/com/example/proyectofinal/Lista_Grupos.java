@@ -34,6 +34,14 @@ public class Lista_Grupos extends AppCompatActivity {
 
         adaptador = new AdaptadorGrupos(this, listaGrupos, new AdaptadorGrupos.OnGrupoClickListener() {
             @Override
+            public void onClick(Grupo grupo) {
+                // NUEVO: ir a la actividad que muestra las tareas del grupo
+                Intent intent = new Intent(Lista_Grupos.this, TareasPorGrupo.class);
+                intent.putExtra("nombreGrupo", grupo.getNombre()); // pasamos el nombre del grupo
+                startActivity(intent);
+            }
+
+            @Override
             public void onModificar(Grupo grupo) {
                 mostrarDialogoEditar(grupo);
             }

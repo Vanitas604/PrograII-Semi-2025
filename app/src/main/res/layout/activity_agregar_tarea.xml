@@ -19,20 +19,31 @@
         android:layout_below="@id/edtTitulo"
         android:layout_marginTop="8dp" />
 
-    <EditText
-        android:id="@+id/edtGrupo"
+    <TextView
+        android:id="@+id/labelGrupo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Grupo"
+        android:text="Seleccionar grupo"
+        android:textStyle="bold"
         android:layout_below="@id/edtDescripcion"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="12dp" />
+
+    <Spinner
+        android:id="@+id/spinnerGrupo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/labelGrupo"
+        android:layout_marginTop="4dp" />
 
     <EditText
         android:id="@+id/edtFecha"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Fecha de creación (ej: 2025-05-01)"
-        android:layout_below="@id/edtGrupo"
+        android:hint="Fecha de creación"
+        android:focusable="false"
+        android:clickable="true"
+        android:inputType="none"
+        android:layout_below="@id/spinnerGrupo"
         android:layout_marginTop="8dp" />
 
     <CheckBox
@@ -58,5 +69,4 @@
         android:text="Cancelar"
         android:layout_below="@id/btnGuardar"
         android:layout_marginTop="8dp" />
-
 </RelativeLayout>

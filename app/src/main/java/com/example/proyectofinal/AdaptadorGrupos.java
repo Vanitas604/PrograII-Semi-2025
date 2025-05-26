@@ -1,13 +1,14 @@
 package com.example.proyectofinal;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
@@ -19,6 +20,7 @@ public class AdaptadorGrupos extends RecyclerView.Adapter<AdaptadorGrupos.ViewHo
     private final OnGrupoClickListener listener;
 
     public interface OnGrupoClickListener {
+        void onClick(Grupo grupo);
         void onModificar(Grupo grupo);
         void onEliminar(Grupo grupo);
     }
@@ -41,6 +43,13 @@ public class AdaptadorGrupos extends RecyclerView.Adapter<AdaptadorGrupos.ViewHo
         Grupo grupo = listaGrupos.get(position);
         holder.txtNombreGrupo.setText(grupo.getNombre());
 
+        holder.itemView.setOnClickListener(v -> {
+            Toast.makeText(context, "Grupo seleccionado: " + grupo.getNombre(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(context, TareasPorGrupo.class);
+            intent.putExtra("nombreGrupo", grupo.getNombre());
+            context.startActivity(intent);
+        });
+
         holder.itemView.setOnLongClickListener(v -> {
             mostrarPopupMenu(v, grupo);
             return true;
@@ -54,7 +63,6 @@ public class AdaptadorGrupos extends RecyclerView.Adapter<AdaptadorGrupos.ViewHo
 
         popup.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
-
             if (itemId == R.id.opModificar) {
                 if (listener != null) listener.onModificar(grupo);
                 return true;
@@ -82,6 +90,7 @@ public class AdaptadorGrupos extends RecyclerView.Adapter<AdaptadorGrupos.ViewHo
         }
     }
 }
+
 
 
 

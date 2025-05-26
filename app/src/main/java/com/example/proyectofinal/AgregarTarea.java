@@ -1,5 +1,7 @@
 package com.example.proyectofinal;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,14 +12,19 @@ import android.view.MenuItem;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+
 public class AgregarTarea extends AppCompatActivity {
 
-    EditText edtTitulo, edtDescripcion, edtGrupo, edtFecha;
+    EditText edtTitulo, edtDescripcion, edtFecha;
+    Spinner spinnerGrupo;
     CheckBox chkRealizada;
     Button btnGuardar, btnCancelar;
 
     DBTareas dbHelper;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +32,7 @@ public class AgregarTarea extends AppCompatActivity {
 
         edtTitulo = findViewById(R.id.edtTitulo);
         edtDescripcion = findViewById(R.id.edtDescripcion);
-        edtGrupo = findViewById(R.id.edtGrupo);
+        spinnerGrupo = findViewById(R.id.spinnerGrupo);
         edtFecha = findViewById(R.id.edtFecha);
         chkRealizada = findViewById(R.id.chkRealizada);
         btnGuardar = findViewById(R.id.btnGuardar);
@@ -33,14 +40,57 @@ public class AgregarTarea extends AppCompatActivity {
 
         dbHelper = new DBTareas(this);
 
+        // Llenar el Spinner con los grupos de la base de datos
+        cargarGruposEnSpinner();
+
+        // Configurar selector de fecha
+        edtFecha.setOnClickListener(v -> {
+            final Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    AgregarTarea.this,
+                    (view, selectedYear, selectedMonth, selectedDay) -> {
+                        String fechaSeleccionada = selectedYear + "-"
+                                + String.format("%02d", (selectedMonth + 1)) + "-"
+                                + String.format("%02d", selectedDay);
+                        edtFecha.setText(fechaSeleccionada);
+                    },
+                    year, month, day
+            );
+            datePickerDialog.show();
+        });
+
         btnGuardar.setOnClickListener(v -> guardarTarea());
         btnCancelar.setOnClickListener(v -> finish());
+    }
+
+    private void cargarGruposEnSpinner() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT nombre FROM " + DBTareas.TABLA_GRUPO, null);
+
+        ArrayList<String> listaGrupos = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                listaGrupos.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                listaGrupos
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGrupo.setAdapter(adapter);
     }
 
     private void guardarTarea() {
         String titulo = edtTitulo.getText().toString();
         String descripcion = edtDescripcion.getText().toString();
-        String grupo = edtGrupo.getText().toString();
         String fecha = edtFecha.getText().toString();
         boolean realizada = chkRealizada.isChecked();
 
@@ -49,17 +99,14 @@ public class AgregarTarea extends AppCompatActivity {
             return;
         }
 
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        // Verificar si el grupo ya existe
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBTareas.TABLA_GRUPO + " WHERE nombre = ?", new String[]{grupo});
-        if (!cursor.moveToFirst()) {
-            // Grupo no existe, lo insertamos
-            ContentValues valoresGrupo = new ContentValues();
-            valoresGrupo.put("nombre", grupo);
-            db.insert(DBTareas.TABLA_GRUPO, null, valoresGrupo);
+        if (spinnerGrupo.getSelectedItem() == null) {
+            Toast.makeText(this, "Debes seleccionar un grupo", Toast.LENGTH_SHORT).show();
+            return;
         }
-        cursor.close();
+
+        String grupo = spinnerGrupo.getSelectedItem().toString();
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         // Insertar la tarea
         ContentValues valores = new ContentValues();
@@ -103,7 +150,3 @@ public class AgregarTarea extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-
-
-
-

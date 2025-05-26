@@ -12,22 +12,22 @@ import java.util.List;
 
 public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHolder> {
 
-    private Context context;
-    private List<Tareas> listaTareas;
-    private OnTareaClickListener listener;
-    private OnTareaLongClickListener longClickListener;
+    private final Context context;
+    private final List<Tareas> listaTareas;
+    private final OnTareaClickListener listener;
+    private final OnTareaLongClickListener longClickListener;
 
-    // Interfaz para notificar a MainActivity sobre la tarea seleccionada
     public interface OnTareaClickListener {
         void onTareaClick(Tareas tarea);
     }
 
-    // Nueva interfaz para manejar el long click
     public interface OnTareaLongClickListener {
         void onTareaLongClick(View vista, Tareas tarea);
     }
 
-    public AdaptadorTareas(Context context, List<Tareas> listaTareas, OnTareaClickListener listener, OnTareaLongClickListener longClickListener) {
+    public AdaptadorTareas(Context context, List<Tareas> listaTareas,
+                           OnTareaClickListener listener,
+                           OnTareaLongClickListener longClickListener) {
         this.context = context;
         this.listaTareas = listaTareas;
         this.listener = listener;
@@ -50,18 +50,16 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
         holder.txtFechaLimite.setText(tarea.getFechaLimite());
         holder.chkRealizada.setChecked(tarea.isRealizada());
 
-        // Al hacer clic en el ítem, se comunica a MainActivity la tarea seleccionada
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onTareaClick(tarea);
             }
         });
 
-        // Al hacer un long click, se invoca el longClickListener para mostrar el menú flotante
         holder.itemView.setOnLongClickListener(v -> {
             if (longClickListener != null) {
-                longClickListener.onTareaLongClick(v, tarea); // Llama al long click listener
-                return true; // Evita que el evento se propague
+                longClickListener.onTareaLongClick(v, tarea);
+                return true;
             }
             return false;
         });
@@ -86,7 +84,3 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
         }
     }
 }
-
-
-
-

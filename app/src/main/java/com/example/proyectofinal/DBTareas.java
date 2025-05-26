@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBTareas extends SQLiteOpenHelper {
 
@@ -86,6 +88,27 @@ public class DBTareas extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return existe;
+    }
+    public List<Tareas> obtenerTareasPorGrupo(String grupo) {
+        List<Tareas> lista = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLA_TAREAS + " WHERE grupo = ?", new String[]{grupo});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Tareas tarea = new Tareas();
+                tarea.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMNA_ID)));
+                tarea.setTitulo(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNA_TITULO)));
+                tarea.setDescripcion(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNA_DESCRIPCION)));
+                tarea.setGrupo(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNA_GRUPO)));
+                tarea.setFechaLimite(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNA_FECHA_LIMITE)));
+                tarea.setRealizada(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMNA_REALIZADA)) == 1);
+                lista.add(tarea);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return lista;
     }
 
 }
