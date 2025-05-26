@@ -40,6 +40,20 @@
             android:text="Fecha Límite"
             android:textSize="12sp"/>
 
+        <TextView
+            android:id="@+id/txtHoraRecordatorio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hora del recordatorio"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/txtRepetirDiariamente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="¿Repetir diariamente?"
+            android:textSize="12sp"/>
+
         <CheckBox
             android:id="@+id/chkRealizada"
             android:layout_width="wrap_content"
@@ -48,4 +62,3 @@
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
-

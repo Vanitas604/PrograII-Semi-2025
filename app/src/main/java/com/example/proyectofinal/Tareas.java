@@ -7,66 +7,45 @@ public class Tareas {
     private String grupo;
     private String fechaLimite;
     private boolean realizada;
+    private String horaRecordatorio;
+    private boolean repetirDiariamente;
 
-    // Constructor vacío (importante para Firebase o CouchDB)
     public Tareas() {
     }
 
-    // Constructor completo
-    public Tareas(int id, String titulo, String descripcion, String grupo, String fechaLimite, boolean realizada) {
+    public Tareas(int id, String titulo, String descripcion, String grupo, String fechaLimite, boolean realizada,
+                  String horaRecordatorio, boolean repetirDiariamente) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.grupo = grupo;
         this.fechaLimite = fechaLimite;
         this.realizada = realizada;
+        this.horaRecordatorio = horaRecordatorio;
+        this.repetirDiariamente = repetirDiariamente;
     }
 
-    // Getter y Setter de id
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    // Getter y Setter de titulo
-    public String getTitulo() {
-        return titulo;
-    }
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 
-    // Getter y Setter de descripcion
-    public String getDescripcion() {
-        return descripcion;
-    }
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    // Getter y Setter de grupo
-    public String getGrupo() {
-        return grupo;
-    }
-    public void setGrupo(String grupo) {
-        this.grupo = grupo;
-    }
+    public String getGrupo() { return grupo; }
+    public void setGrupo(String grupo) { this.grupo = grupo; }
 
-    // Getter y Setter de fechaLimite
-    public String getFechaLimite() {
-        return fechaLimite;
-    }
-    public void setFechaLimite(String fechaLimite) {
-        this.fechaLimite = fechaLimite;
-    }
+    public String getFechaLimite() { return fechaLimite; }
+    public void setFechaLimite(String fechaLimite) { this.fechaLimite = fechaLimite; }
 
-    // Getter y Setter de realizada
-    public boolean isRealizada() {
-        return realizada;
-    }
-    public void setRealizada(boolean realizada) {
-        this.realizada = realizada;
-    }
+    public boolean isRealizada() { return realizada; }
+    public void setRealizada(boolean realizada) { this.realizada = realizada; }
+
+    public String getHoraRecordatorio() { return horaRecordatorio; }
+    public void setHoraRecordatorio(String horaRecordatorio) { this.horaRecordatorio = horaRecordatorio; }
+
+    public boolean isRepetirDiariamente() { return repetirDiariamente; }
+    public void setRepetirDiariamente(boolean repetirDiariamente) { this.repetirDiariamente = repetirDiariamente; }
 }

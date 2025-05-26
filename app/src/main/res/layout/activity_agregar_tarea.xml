@@ -46,12 +46,46 @@
         android:layout_below="@id/spinnerGrupo"
         android:layout_marginTop="8dp" />
 
+    <!-- 🔔 NUEVOS CAMPOS AGREGADOS 🔔 -->
+
+    <EditText
+        android:id="@+id/edtFechaRecordatorio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Fecha de recordatorio"
+        android:focusable="false"
+        android:clickable="true"
+        android:inputType="none"
+        android:layout_below="@id/edtFecha"
+        android:layout_marginTop="8dp" />
+
+    <EditText
+        android:id="@+id/edtHoraRecordatorio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Hora de recordatorio"
+        android:focusable="false"
+        android:clickable="true"
+        android:inputType="none"
+        android:layout_below="@id/edtFechaRecordatorio"
+        android:layout_marginTop="8dp" />
+
+    <CheckBox
+        android:id="@+id/chkRepetirDiario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¿Repetir diariamente?"
+        android:layout_below="@id/edtHoraRecordatorio"
+        android:layout_marginTop="8dp" />
+
+    <!-- ✅ FIN DE NUEVOS CAMPOS -->
+
     <CheckBox
         android:id="@+id/chkRealizada"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="¿Ya está realizada?"
-        android:layout_below="@id/edtFecha"
+        android:layout_below="@id/chkRepetirDiario"
         android:layout_marginTop="12dp" />
 
     <Button
@@ -69,4 +103,5 @@
         android:text="Cancelar"
         android:layout_below="@id/btnGuardar"
         android:layout_marginTop="8dp" />
+
 </RelativeLayout>

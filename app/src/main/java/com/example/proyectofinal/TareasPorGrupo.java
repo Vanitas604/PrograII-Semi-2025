@@ -50,23 +50,41 @@ public class TareasPorGrupo extends AppCompatActivity {
 
     private void cargarTareasPorGrupo(String grupo) {
         listaTareas.clear();
-        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT id, titulo, descripcion, grupo, fecha_limite, realizada FROM " + DBTareas.TABLA_TAREAS +
-                        " WHERE grupo = ?", new String[]{grupo});
 
-        if (cursor.moveToFirst()) {
+        String[] columnas = {
+                DBTareas.COLUMNA_ID,
+                DBTareas.COLUMNA_TITULO,
+                DBTareas.COLUMNA_DESCRIPCION,
+                DBTareas.COLUMNA_GRUPO,
+                DBTareas.COLUMNA_FECHA_LIMITE,
+                DBTareas.COLUMNA_HORA_RECORDATORIO,
+                DBTareas.COLUMNA_REPETIR_DIARIAMENTE,
+                DBTareas.COLUMNA_REALIZADA
+        };
+
+        Cursor cursor = dbHelper.getReadableDatabase().query(
+                DBTareas.TABLA_TAREAS,
+                columnas,
+                DBTareas.COLUMNA_GRUPO + " = ?",
+                new String[]{grupo},
+                null, null, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
             do {
-                Tareas tarea = new Tareas(
-                        cursor.getInt(0),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getString(3),
-                        cursor.getString(4),
-                        cursor.getInt(5) == 1
-                );
+                Tareas tarea = new Tareas();
+                tarea.setId(cursor.getInt(cursor.getColumnIndexOrThrow(DBTareas.COLUMNA_ID)));
+                tarea.setTitulo(cursor.getString(cursor.getColumnIndexOrThrow(DBTareas.COLUMNA_TITULO)));
+                tarea.setDescripcion(cursor.getString(cursor.getColumnIndexOrThrow(DBTareas.COLUMNA_DESCRIPCION)));
+                tarea.setGrupo(cursor.getString(cursor.getColumnIndexOrThrow(DBTareas.COLUMNA_GRUPO)));
+                tarea.setFechaLimite(cursor.getString(cursor.getColumnIndexOrThrow(DBTareas.COLUMNA_FECHA_LIMITE)));
+                tarea.setHoraRecordatorio(cursor.getString(cursor.getColumnIndexOrThrow(DBTareas.COLUMNA_HORA_RECORDATORIO)));
+                tarea.setRepetirDiariamente(cursor.getInt(cursor.getColumnIndexOrThrow(DBTareas.COLUMNA_REPETIR_DIARIAMENTE)) == 1);
+                tarea.setRealizada(cursor.getInt(cursor.getColumnIndexOrThrow(DBTareas.COLUMNA_REALIZADA)) == 1);
+
                 listaTareas.add(tarea);
             } while (cursor.moveToNext());
+            cursor.close();
         }
-        cursor.close();
     }
+
 }

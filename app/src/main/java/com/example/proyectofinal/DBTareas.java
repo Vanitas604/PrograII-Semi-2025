@@ -10,7 +10,7 @@ import java.util.List;
 public class DBTareas extends SQLiteOpenHelper {
 
     private static final String NOMBRE_BASE_DATOS = "DBTareas.db";
-    private static final int VERSION_BASE_DATOS = 1;
+    private static final int VERSION_BASE_DATOS = 2; // Se incrementa la versión
 
     public static final String TABLA_TAREAS = "tareas";
     public static final String TABLA_GRUPO = "grupo";
@@ -22,6 +22,8 @@ public class DBTareas extends SQLiteOpenHelper {
     public static final String COLUMNA_GRUPO = "grupo";
     public static final String COLUMNA_FECHA_LIMITE = "fecha_limite";
     public static final String COLUMNA_REALIZADA = "realizada";
+    public static final String COLUMNA_HORA_RECORDATORIO = "hora_recordatorio";
+    public static final String COLUMNA_REPETIR_DIARIAMENTE = "repetir_diariamente";
 
     public DBTareas(Context context) {
         super(context, NOMBRE_BASE_DATOS, null, VERSION_BASE_DATOS);
@@ -29,30 +31,28 @@ public class DBTareas extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Crear tabla tareas
         String CREATE_TABLE_TAREAS = "CREATE TABLE " + TABLA_TAREAS + " (" +
                 COLUMNA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMNA_TITULO + " TEXT, " +
                 COLUMNA_DESCRIPCION + " TEXT, " +
                 COLUMNA_GRUPO + " TEXT, " +
                 COLUMNA_FECHA_LIMITE + " TEXT, " +
-                COLUMNA_REALIZADA + " INTEGER)";
+                COLUMNA_REALIZADA + " INTEGER, " +
+                COLUMNA_HORA_RECORDATORIO + " TEXT, " +
+                COLUMNA_REPETIR_DIARIAMENTE + " INTEGER)";
         db.execSQL(CREATE_TABLE_TAREAS);
 
-        // Crear tabla grupo
         String CREATE_TABLE_GRUPO = "CREATE TABLE " + TABLA_GRUPO + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "nombre TEXT NOT NULL)";
         db.execSQL(CREATE_TABLE_GRUPO);
 
-        // Crear tabla usuarios
         String CREATE_TABLE_USUARIOS = "CREATE TABLE " + TABLA_USUARIOS + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "usuario TEXT NOT NULL UNIQUE, " +  // UNIQUE para evitar duplicados
+                "usuario TEXT NOT NULL UNIQUE, " +
                 "contrasena TEXT NOT NULL)";
         db.execSQL(CREATE_TABLE_USUARIOS);
 
-        // Insertar usuario por defecto
         db.execSQL("INSERT INTO " + TABLA_USUARIOS + " (usuario, contrasena) VALUES ('admin', '1234')");
     }
 
@@ -89,6 +89,7 @@ public class DBTareas extends SQLiteOpenHelper {
         db.close();
         return existe;
     }
+
     public List<Tareas> obtenerTareasPorGrupo(String grupo) {
         List<Tareas> lista = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -103,6 +104,8 @@ public class DBTareas extends SQLiteOpenHelper {
                 tarea.setGrupo(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNA_GRUPO)));
                 tarea.setFechaLimite(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNA_FECHA_LIMITE)));
                 tarea.setRealizada(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMNA_REALIZADA)) == 1);
+                tarea.setHoraRecordatorio(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNA_HORA_RECORDATORIO)));
+                tarea.setRepetirDiariamente(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMNA_REPETIR_DIARIAMENTE)) == 1);
                 lista.add(tarea);
             } while (cursor.moveToNext());
         }
@@ -110,6 +113,4 @@ public class DBTareas extends SQLiteOpenHelper {
         cursor.close();
         return lista;
     }
-
 }
-

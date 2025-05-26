@@ -47,13 +47,16 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
         holder.txtTitulo.setText(tarea.getTitulo());
         holder.txtDescripcion.setText(tarea.getDescripcion());
         holder.txtGrupo.setText(tarea.getGrupo());
-        holder.txtFechaLimite.setText(tarea.getFechaLimite());
+        holder.txtFechaLimite.setText("Fecha límite: " + tarea.getFechaLimite());
         holder.chkRealizada.setChecked(tarea.isRealizada());
 
+        // Nuevos campos
+        holder.txtHoraRecordatorio.setText("Hora: " + tarea.getHoraRecordatorio());
+        holder.txtRepetirDiariamente.setText("Repetir diariamente: " +
+                (tarea.isRepetirDiariamente() ? "Sí" : "No"));
+
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onTareaClick(tarea);
-            }
+            if (listener != null) listener.onTareaClick(tarea);
         });
 
         holder.itemView.setOnLongClickListener(v -> {
@@ -72,6 +75,7 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtTitulo, txtDescripcion, txtGrupo, txtFechaLimite;
+        TextView txtHoraRecordatorio, txtRepetirDiariamente;
         CheckBox chkRealizada;
 
         public ViewHolder(@NonNull View itemView) {
@@ -80,6 +84,8 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
             txtDescripcion = itemView.findViewById(R.id.txtDescripcion);
             txtGrupo = itemView.findViewById(R.id.txtGrupo);
             txtFechaLimite = itemView.findViewById(R.id.txtFechaLimite);
+            txtHoraRecordatorio = itemView.findViewById(R.id.txtHoraRecordatorio);
+            txtRepetirDiariamente = itemView.findViewById(R.id.txtRepetirDiariamente);
             chkRealizada = itemView.findViewById(R.id.chkRealizada);
         }
     }

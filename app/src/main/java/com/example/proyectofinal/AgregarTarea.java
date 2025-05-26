@@ -1,152 +1,119 @@
 package com.example.proyectofinal;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.ContentValues;
-import android.content.Intent;
+import android.app.TimePickerDialog;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class AgregarTarea extends AppCompatActivity {
 
-    EditText edtTitulo, edtDescripcion, edtFecha;
-    Spinner spinnerGrupo;
-    CheckBox chkRealizada;
-    Button btnGuardar, btnCancelar;
+    private EditText edtTitulo, edtDescripcion, edtFecha, edtFechaRecordatorio, edtHoraRecordatorio;
+    private Spinner spinnerGrupo;
+    private CheckBox chkRealizada, chkRepetirDiario;
+    private Button btnGuardar, btnCancelar;
+    private DBTareas dbTareas;
 
-    DBTareas dbHelper;
-
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agregar_tarea);
 
+        dbTareas = new DBTareas(this);
+
         edtTitulo = findViewById(R.id.edtTitulo);
         edtDescripcion = findViewById(R.id.edtDescripcion);
-        spinnerGrupo = findViewById(R.id.spinnerGrupo);
         edtFecha = findViewById(R.id.edtFecha);
+        edtFechaRecordatorio = findViewById(R.id.edtFechaRecordatorio);
+        edtHoraRecordatorio = findViewById(R.id.edtHoraRecordatorio);
+        spinnerGrupo = findViewById(R.id.spinnerGrupo);
         chkRealizada = findViewById(R.id.chkRealizada);
+        chkRepetirDiario = findViewById(R.id.chkRepetirDiario);
         btnGuardar = findViewById(R.id.btnGuardar);
         btnCancelar = findViewById(R.id.btnCancelar);
 
-        dbHelper = new DBTareas(this);
-
-        // Llenar el Spinner con los grupos de la base de datos
-        cargarGruposEnSpinner();
-
-        // Configurar selector de fecha
-        edtFecha.setOnClickListener(v -> {
-            final Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    AgregarTarea.this,
-                    (view, selectedYear, selectedMonth, selectedDay) -> {
-                        String fechaSeleccionada = selectedYear + "-"
-                                + String.format("%02d", (selectedMonth + 1)) + "-"
-                                + String.format("%02d", selectedDay);
-                        edtFecha.setText(fechaSeleccionada);
-                    },
-                    year, month, day
-            );
-            datePickerDialog.show();
-        });
+        // Mostrar selectores de fecha y hora
+        edtFecha.setOnClickListener(v -> mostrarDatePicker(edtFecha));
+        edtFechaRecordatorio.setOnClickListener(v -> mostrarDatePicker(edtFechaRecordatorio));
+        edtHoraRecordatorio.setOnClickListener(v -> mostrarTimePicker(edtHoraRecordatorio));
 
         btnGuardar.setOnClickListener(v -> guardarTarea());
         btnCancelar.setOnClickListener(v -> finish());
+
+        // Cargar grupos en el Spinner
+        cargarGruposEnSpinner();
+    }
+
+    private void mostrarDatePicker(EditText campo) {
+        final Calendar c = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (view, year, month, dayOfMonth) -> campo.setText(String.format("%02d/%02d/%04d", dayOfMonth, month + 1, year)),
+                c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
+    private void mostrarTimePicker(EditText campo) {
+        final Calendar c = Calendar.getInstance();
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                (view, hourOfDay, minute) -> campo.setText(String.format("%02d:%02d", hourOfDay, minute)),
+                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
+        timePickerDialog.show();
     }
 
     private void cargarGruposEnSpinner() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT nombre FROM " + DBTareas.TABLA_GRUPO, null);
+        List<String> grupos = new ArrayList<>();
+        SQLiteDatabase db = dbTareas.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT nombre FROM grupo", null);
 
-        ArrayList<String> listaGrupos = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
-                listaGrupos.add(cursor.getString(0));
+                grupos.add(cursor.getString(0));
             } while (cursor.moveToNext());
         }
-        cursor.close();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                listaGrupos
-        );
+        cursor.close();
+        db.close();
+
+        if (grupos.isEmpty()) {
+            grupos.add("Sin grupos disponibles");
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, grupos);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGrupo.setAdapter(adapter);
     }
 
     private void guardarTarea() {
-        String titulo = edtTitulo.getText().toString();
-        String descripcion = edtDescripcion.getText().toString();
-        String fecha = edtFecha.getText().toString();
+        String titulo = edtTitulo.getText().toString().trim();
+        String descripcion = edtDescripcion.getText().toString().trim();
+        String grupo = spinnerGrupo.getSelectedItem() != null ? spinnerGrupo.getSelectedItem().toString() : "";
+        String fechaLimite = edtFecha.getText().toString().trim();
+        String fechaRecordatorio = edtFechaRecordatorio.getText().toString().trim();
+        String horaRecordatorio = edtHoraRecordatorio.getText().toString().trim();
         boolean realizada = chkRealizada.isChecked();
+        boolean repetirDiariamente = chkRepetirDiario.isChecked();
 
         if (titulo.isEmpty()) {
             Toast.makeText(this, "El título es obligatorio", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (spinnerGrupo.getSelectedItem() == null) {
-            Toast.makeText(this, "Debes seleccionar un grupo", Toast.LENGTH_SHORT).show();
+        if (grupo.equals("Sin grupos disponibles")) {
+            Toast.makeText(this, "Primero debes crear un grupo", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String grupo = spinnerGrupo.getSelectedItem().toString();
+        SQLiteDatabase db = dbTareas.getWritableDatabase();
+        db.execSQL("INSERT INTO tareas (titulo, descripcion, grupo, fecha_limite, realizada, hora_recordatorio, repetir_diariamente) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                new Object[]{titulo, descripcion, grupo, fechaLimite, realizada ? 1 : 0, horaRecordatorio, repetirDiariamente ? 1 : 0});
+        db.close();
 
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        // Insertar la tarea
-        ContentValues valores = new ContentValues();
-        valores.put(DBTareas.COLUMNA_TITULO, titulo);
-        valores.put(DBTareas.COLUMNA_DESCRIPCION, descripcion);
-        valores.put(DBTareas.COLUMNA_GRUPO, grupo);
-        valores.put(DBTareas.COLUMNA_FECHA_LIMITE, fecha);
-        valores.put(DBTareas.COLUMNA_REALIZADA, realizada ? 1 : 0);
-
-        long id = db.insert(DBTareas.TABLA_TAREAS, null, valores);
-
-        if (id > 0) {
-            Toast.makeText(this, "Tarea guardada correctamente", Toast.LENGTH_SHORT).show();
-            finish();
-        } else {
-            Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.mnxNuevo) {
-            startActivity(new Intent(this, AgregarTarea.class));
-            return true;
-        } else if (id == R.id.mnxModificar) {
-            Toast.makeText(this, "Modificar seleccionado", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (id == R.id.mnxEliminar) {
-            Toast.makeText(this, "Eliminar seleccionado", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        Toast.makeText(this, "Tarea guardada", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }
