@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#6A1B9A"> <!-- Morado oscuro -->
+    android:background="@color/white"> <!-- Morado oscuro -->
 
     <!-- Título de la pantalla -->
     <TextView
@@ -12,10 +12,11 @@
         android:layout_height="wrap_content"
         android:text="Ajustes de la Aplicación"
         android:textSize="20sp"
-        android:textColor="@android:color/white"
+        android:textColor="@color/black"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        />
 
     <!-- Switch para activar/desactivar notificaciones -->
     <Switch
@@ -23,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Activar Notificaciones"
-        android:textColor="@android:color/white"
+        android:textColor="@color/black"
         android:layout_below="@id/txtTituloAjustes"
         android:layout_marginTop="32dp" />
 
@@ -33,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tema Oscuro"
-        android:textColor="@android:color/white"
+        android:textColor="@color/black"
         android:layout_below="@id/switchNotificaciones"
         android:layout_marginTop="16dp" />
 
@@ -43,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Recordatorio Automático"
-        android:textColor="@android:color/white"
+        android:textColor="@color/black"
         android:layout_below="@id/switchTemaOscuro"
         android:layout_marginTop="16dp" />
 
@@ -53,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Activar opciones de Chats"
-        android:textColor="@android:color/white"
+        android:textColor="@color/black"
         android:layout_below="@id/switchRecordatorios"
         android:layout_marginTop="32dp" />
 
@@ -63,7 +64,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Idioma: Español (Activado)"
-        android:textColor="@android:color/white"
+        android:textColor="@color/black"
         android:layout_below="@id/switchChats"
         android:layout_marginTop="16dp" />
 
@@ -75,7 +76,7 @@
         android:text="Guardar Ajustes"
         android:layout_below="@id/switchIdioma"
         android:layout_marginTop="32dp"
-        android:background="@android:color/white"
+        android:background="@color/aqua_oscuro"
         android:textColor="@android:color/black"
         android:padding="12dp" />
 </RelativeLayout>

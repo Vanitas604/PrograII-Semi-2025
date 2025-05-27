@@ -2,14 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:background="@color/white">
 
     <EditText
         android:id="@+id/txtNuevoUsuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nuevo Usuario"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:textColor="@color/black"/>
 
     <EditText
         android:id="@+id/txtNuevaContrasena"
@@ -18,7 +20,8 @@
         android:hint="Nueva Contraseña"
         android:inputType="textPassword"
         android:layout_below="@id/txtNuevoUsuario"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:textColor="@color/black"/>
 
     <Button
         android:id="@+id/btnRegistrarCuenta"
@@ -26,6 +29,7 @@
         android:layout_height="wrap_content"
         android:text="Registrar Cuenta"
         android:layout_below="@id/txtNuevaContrasena"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="24dp"
+        android:background="@color/aqua_oscuro"/>
 
 </RelativeLayout>

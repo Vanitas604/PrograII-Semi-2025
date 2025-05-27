@@ -3,13 +3,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:background="@color/white">
 
     <EditText
         android:id="@+id/txtUsuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Usuario" />
+        android:hint="Usuario"
+        android:textColor="@color/black"/>
 
     <EditText
         android:id="@+id/txtContrasena"
@@ -18,7 +20,8 @@
         android:hint="Contraseña"
         android:inputType="textPassword"
         android:layout_below="@id/txtUsuario"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:textColor="@color/black"/>
 
     <Button
         android:id="@+id/btnIniciarSesion"
@@ -26,7 +29,8 @@
         android:layout_height="wrap_content"
         android:text="Iniciar Sesión"
         android:layout_below="@id/txtContrasena"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="24dp"
+        android:shadowColor="@color/aqua_claro"/>
 
     <Button
         android:id="@+id/btnCrearCuenta"
@@ -34,6 +38,7 @@
         android:layout_height="wrap_content"
         android:text="Crear Cuenta"
         android:layout_below="@id/btnIniciarSesion"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:shadowColor="@color/aqua_oscuro"/>
 
 </RelativeLayout>

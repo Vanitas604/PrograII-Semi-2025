@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@android:color/white">
+    android:background="@color/white">
 
     <Button
         android:id="@+id/btnAgregarGrupo"
@@ -11,7 +11,8 @@
         android:text="Agregar Grupo"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:background="@color/aqua_oscuro"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerGrupos"
@@ -20,5 +21,6 @@
         android:layout_below="@id/btnAgregarGrupo"
         android:layout_marginTop="16dp"
         android:clipToPadding="false"
-        android:paddingBottom="16dp"/>
+        android:paddingBottom="16dp"
+        />
 </RelativeLayout>
