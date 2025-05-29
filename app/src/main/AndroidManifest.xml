@@ -25,7 +25,6 @@
         <activity android:name=".CrearCuenta" />
         <activity android:name=".TareasPorGrupo" />
 
-
         <!-- Nueva actividad Ajustes -->
         <activity android:name=".AjustesActivity" />
 

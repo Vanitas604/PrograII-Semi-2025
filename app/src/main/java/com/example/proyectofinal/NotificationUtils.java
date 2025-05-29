@@ -73,4 +73,3 @@ public final class NotificationUtils {
         NotificationManagerCompat.from(ctx).notify(NOTIF_ID, builder.build());
     }
 }
-
