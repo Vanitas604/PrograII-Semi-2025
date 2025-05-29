@@ -13,6 +13,7 @@ public class ListaTareasPorGrupo extends AppCompatActivity {
     AdaptadorTareas adaptador;
     DBTareas dbHelper;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

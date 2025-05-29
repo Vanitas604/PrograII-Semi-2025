@@ -85,6 +85,7 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
         TextView txtHoraRecordatorio, txtRepetirDiariamente;
         CheckBox chkRealizada;
 
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtTitulo = itemView.findViewById(R.id.txtTitulo);

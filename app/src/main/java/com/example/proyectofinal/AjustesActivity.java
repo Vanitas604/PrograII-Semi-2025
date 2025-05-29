@@ -65,6 +65,7 @@ public class AjustesActivity extends AppCompatActivity {
         editor.apply();
     }
 
+
     // Método para cargar los ajustes guardados
     private void cargarAjustes() {
         SharedPreferences prefs = getSharedPreferences("AjustesPrefs", MODE_PRIVATE);

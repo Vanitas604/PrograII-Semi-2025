@@ -68,6 +68,7 @@
         android:layout_below="@id/switchChats"
         android:layout_marginTop="16dp" />
 
+
     <!-- Botón para guardar los ajustes -->
     <Button
         android:id="@+id/btnGuardarAjustes"
