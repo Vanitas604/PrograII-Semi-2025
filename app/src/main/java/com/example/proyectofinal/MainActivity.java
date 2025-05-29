@@ -1,18 +1,28 @@
 package com.example.proyectofinal;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
     DBTareas dbHelper;
     Tareas selectedTarea;
+
+    private static final String CHANNEL_ID = "canal_tareas";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +65,36 @@ public class MainActivity extends AppCompatActivity {
 
         cargarTareas();
 
+        // Crear canal de notificación (Android 8 +)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Canal de Tareas",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+
+        // Pedir permiso de notificaciones (Android 13 +)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
+            }
+        }
+
         btnAgregar.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AgregarTarea.class);
-            startActivity(intent);
+            mostrarNotificacion("Tarea nueva", "Abriendo pantalla para agregar tarea");
+            startActivity(new Intent(MainActivity.this, AgregarTarea.class));
         });
 
         btnGrupos.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, Lista_Grupos.class);
-            startActivity(intent);
+            startActivity(new Intent(MainActivity.this, Lista_Grupos.class));
         });
     }
 
+    /** Carga todas las tareas, incluyendo hora_recordatorio y repetir_diariamente */
     private void cargarTareas() {
         listaTareas.clear();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -78,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
                 tarea.setGrupo(cursor.getString(3));
                 tarea.setFechaLimite(cursor.getString(4));
                 tarea.setRealizada(cursor.getInt(5) == 1);
+                tarea.setHoraRecordatorio(cursor.getString(6));          // ← NUEVO
+                tarea.setRepetirDiariamente(cursor.getInt(7) == 1);      // ← NUEVO
                 listaTareas.add(tarea);
             } while (cursor.moveToNext());
         }
@@ -89,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu); // Asegúrate de que tu archivo menu.xml incluya la opción Ajustes
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
@@ -117,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         } else if (id == R.id.mnxAjustes) {
-            // Abrir la actividad de ajustes
             startActivity(new Intent(this, AjustesActivity.class));
             return true;
         }
@@ -163,4 +195,15 @@ public class MainActivity extends AppCompatActivity {
         popup.show();
     }
 
+    /** Notificación rápida para comprobar que el canal funciona */
+    @SuppressLint("MissingPermission")
+    private void mostrarNotificacion(String titulo, String mensaje) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notif) // asegúrate de tener este icono
+                .setContentTitle(titulo)
+                .setContentText(mensaje)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        NotificationManagerCompat.from(this)
+                .notify((int) System.currentTimeMillis(), builder.build());
+    }
 }
