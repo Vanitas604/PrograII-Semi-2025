@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,6 +16,7 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <!-- Botón Grupos -->
     <Button
         android:id="@+id/btnGrupos"
         android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
         android:layout_below="@id/toolbar"
         android:layout_alignParentStart="true"
         android:layout_marginTop="8dp"
-        android:shadowColor="@color/aqua_claro"/>
+        android:shadowColor="@color/aqua_claro" />
 
     <!-- Botón Agregar Tarea -->
     <Button
@@ -35,17 +35,26 @@
         android:text="Agregar Tarea"
         android:layout_alignTop="@id/btnGrupos"
         android:layout_alignParentEnd="true"
-        android:shadowColor="@color/aqua_oscuro"/>
+        android:shadowColor="@color/aqua_oscuro" />
+
+    <!-- Spinner de filtro de tareas -->
+    <Spinner
+        android:id="@+id/spinnerFiltro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnGrupos"
+        android:layout_marginTop="8dp"
+        android:layout_alignParentStart="true" />
 
     <!-- RecyclerView para mostrar las tareas -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerTareas"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/btnGrupos"
+        android:layout_below="@id/spinnerFiltro"
         android:layout_marginTop="16dp" />
 
-
 </RelativeLayout>
+
 
 

@@ -1,15 +1,18 @@
 package com.example.proyectofinal;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class AgregarTarea extends AppCompatActivity {
 
@@ -37,7 +40,6 @@ public class AgregarTarea extends AppCompatActivity {
         btnGuardar = findViewById(R.id.btnGuardar);
         btnCancelar = findViewById(R.id.btnCancelar);
 
-        // Mostrar selectores de fecha y hora
         edtFecha.setOnClickListener(v -> mostrarDatePicker(edtFecha));
         edtFechaRecordatorio.setOnClickListener(v -> mostrarDatePicker(edtFechaRecordatorio));
         edtHoraRecordatorio.setOnClickListener(v -> mostrarTimePicker(edtHoraRecordatorio));
@@ -45,7 +47,6 @@ public class AgregarTarea extends AppCompatActivity {
         btnGuardar.setOnClickListener(v -> guardarTarea());
         btnCancelar.setOnClickListener(v -> finish());
 
-        // Cargar grupos en el Spinner
         cargarGruposEnSpinner();
     }
 
@@ -113,7 +114,29 @@ public class AgregarTarea extends AppCompatActivity {
                 new Object[]{titulo, descripcion, grupo, fechaLimite, realizada ? 1 : 0, horaRecordatorio, repetirDiariamente ? 1 : 0});
         db.close();
 
+        // Programar notificación
+        programarNotificacion(this, fechaRecordatorio, horaRecordatorio);
+
         Toast.makeText(this, "Tarea guardada", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    private void programarNotificacion(Context context, String fecha, String hora) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            Date fechaHora = sdf.parse(fecha + " " + hora);
+
+            if (fechaHora != null && fechaHora.after(new Date())) {
+                Intent intent = new Intent(context, Notificador.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                if (alarmManager != null) {
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, fechaHora.getTime(), pendingIntent);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
