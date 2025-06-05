@@ -54,6 +54,16 @@
         android:layout_below="@id/spinnerFiltro"
         android:layout_marginTop="16dp" />
 
+    <Button
+        android:id="@+id/btnGrafica"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recyclerTareas"
+        android:layout_marginTop="-98dp"
+        android:layout_marginBottom="16dp"
+        android:text="Ver Gráfico" />
+
+
 </RelativeLayout>
 
 

@@ -1,7 +1,5 @@
 package com.example.proyectofinal;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
@@ -35,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerTareas;
     private Spinner spinnerFiltro;
-    private Button btnAgregar, btnGrupos;
+    private Button btnAgregar, btnGrupos, btnGrafica;
     private AdaptadorTareas adaptador;
     private ArrayList<Tareas> listaTareas;
     private DBTareas dbHelper;
@@ -57,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         spinnerFiltro = findViewById(R.id.spinnerFiltro);
         btnAgregar = findViewById(R.id.btnAgregar);
         btnGrupos = findViewById(R.id.btnGrupos);
+        btnGrafica = findViewById(R.id.btnGrafica);
 
         dbHelper = new DBTareas(this);
         listaTareas = new ArrayList<>();
@@ -71,10 +70,13 @@ public class MainActivity extends AppCompatActivity {
         cargarOpcionesFiltro();
 
         spinnerFiltro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 aplicarFiltro(pos);
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         crearCanalNotificacion();
@@ -87,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
 
         btnGrupos.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, Lista_Grupos.class))
+        );
+
+        btnGrafica.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, GraficaActivity.class))
         );
     }
 
@@ -102,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void aplicarFiltro(int pos) {
-        // Como solo hay 2 opciones, pos 0 = Pendientes (realizada = 0), pos 1 = Realizadas (realizada = 1)
         cargarTareas(pos, null);
     }
 
@@ -206,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
         aplicarFiltro(spinnerFiltro.getSelectedItemPosition());
     }
 
-    // Menú toolbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -223,5 +227,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
 
 

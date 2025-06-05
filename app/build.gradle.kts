@@ -36,8 +36,13 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.androidx.cardview)
 
-    implementation(libs.androidx.cardview)  // <-- esta línea nueva
+    dependencies {
+        implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    }
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

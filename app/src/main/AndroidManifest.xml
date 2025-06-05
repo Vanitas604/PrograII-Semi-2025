@@ -29,6 +29,7 @@
         <activity android:name=".TareasRealizadas" />
         <!-- Nueva actividad Ajustes -->
         <activity android:name=".AjustesActivity" />
+        <activity android:name=".GraficaActivity" />
 
         <!-- LoginActivity como pantalla inicial -->
         <activity android:name=".LoginActivity"
