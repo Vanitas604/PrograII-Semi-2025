@@ -1,5 +1,7 @@
 package com.example.proyectofinal;
 
+
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
@@ -12,6 +14,7 @@ public class AjustesActivity extends AppCompatActivity {
 
     private Switch switchNotificaciones, switchTemaOscuro, switchRecordatorios, switchChats, switchIdioma;
     private Button btnGuardarAjustes;
+    private Button btnCerrarSesion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,23 +28,21 @@ public class AjustesActivity extends AppCompatActivity {
         switchChats = findViewById(R.id.switchChats);
         switchIdioma = findViewById(R.id.switchIdioma);
         btnGuardarAjustes = findViewById(R.id.btnGuardarAjustes);
+        btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
 
         // Cargar los valores guardados al iniciar la actividad
         cargarAjustes();
 
-        // Configurar botón para guardar los ajustes
+        // Botón guardar ajustes
         btnGuardarAjustes.setOnClickListener(v -> {
-            // Obtener el estado de los switches
             boolean notificacionesActivadas = switchNotificaciones.isChecked();
             boolean temaOscuroActivo = switchTemaOscuro.isChecked();
             boolean recordatorioAutomatico = switchRecordatorios.isChecked();
             boolean chatsActivados = switchChats.isChecked();
             boolean idiomaEspanol = switchIdioma.isChecked();
 
-            // Guardar estos ajustes
             guardarAjustes(notificacionesActivadas, temaOscuroActivo, recordatorioAutomatico, chatsActivados, idiomaEspanol);
 
-            // Mostrar mensaje de confirmación
             String mensaje = "Ajustes guardados:\n" +
                     "Notificaciones: " + (notificacionesActivadas ? "Activadas" : "Desactivadas") + "\n" +
                     "Tema Oscuro: " + (temaOscuroActivo ? "Activo" : "Inactivo") + "\n" +
@@ -51,9 +52,23 @@ public class AjustesActivity extends AppCompatActivity {
 
             Toast.makeText(AjustesActivity.this, mensaje, Toast.LENGTH_LONG).show();
         });
+
+        // Botón cerrar sesión
+        btnCerrarSesion.setOnClickListener(v -> {
+            // Limpiar datos de sesión (opcional)
+            SharedPreferences prefsSesion = getSharedPreferences("sesion", MODE_PRIVATE);
+            SharedPreferences.Editor editorSesion = prefsSesion.edit();
+            editorSesion.clear();
+            editorSesion.apply();
+
+            // Redirigir a LoginActivity y limpiar stack para no volver atrás
+            Intent intent = new Intent(AjustesActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
     }
 
-    // Método para guardar los ajustes
     private void guardarAjustes(boolean notificaciones, boolean temaOscuro, boolean recordatorios, boolean chats, boolean idioma) {
         SharedPreferences prefs = getSharedPreferences("AjustesPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -65,14 +80,12 @@ public class AjustesActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    // Método para cargar los ajustes guardados
     private void cargarAjustes() {
         SharedPreferences prefs = getSharedPreferences("AjustesPrefs", MODE_PRIVATE);
         switchNotificaciones.setChecked(prefs.getBoolean("Notificaciones", false));
         switchTemaOscuro.setChecked(prefs.getBoolean("TemaOscuro", false));
         switchRecordatorios.setChecked(prefs.getBoolean("Recordatorios", false));
         switchChats.setChecked(prefs.getBoolean("Chats", false));
-        switchIdioma.setChecked(prefs.getBoolean("Idioma", true)); // predeterminado: español activado
+        switchIdioma.setChecked(prefs.getBoolean("Idioma", true)); // Español activado por defecto
     }
-
 }

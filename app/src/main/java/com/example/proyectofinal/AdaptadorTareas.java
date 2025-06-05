@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +18,6 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
     private final OnTareaClickListener clickListener;
     private final OnTareaLongClickListener longClickListener;
 
-    // Interfaces para los eventos de clic y clic prolongado
     public interface OnTareaClickListener {
         void onTareaClick(Tareas tarea);
     }
@@ -26,7 +26,6 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
         void onTareaLongClick(View vista, Tareas tarea);
     }
 
-    // Constructor
     public AdaptadorTareas(Context context, List<Tareas> listaTareas,
                            OnTareaClickListener clickListener,
                            OnTareaLongClickListener longClickListener) {
@@ -51,20 +50,34 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
         holder.txtDescripcion.setText(tarea.getDescripcion());
         holder.txtGrupo.setText(tarea.getGrupo());
         holder.txtFechaLimite.setText("Fecha límite: " + tarea.getFechaLimite());
-        holder.chkRealizada.setChecked(tarea.isRealizada());
-
         holder.txtHoraRecordatorio.setText("Hora: " + tarea.getHoraRecordatorio());
         holder.txtRepetirDiariamente.setText("Repetir diariamente: " +
                 (tarea.isRepetirDiariamente() ? "Sí" : "No"));
 
-        // Clic simple
+        // Para evitar múltiples listeners al reciclar la vista
+        holder.chkRealizada.setOnCheckedChangeListener(null);
+
+        holder.chkRealizada.setChecked(tarea.isRealizada());
+
+        if (tarea.isRealizada()) {
+            // ✅ Tarea ya realizada: no se puede desmarcar
+            holder.chkRealizada.setEnabled(false);
+        } else {
+            // 🟢 Tarea no realizada: permitir marcar
+            holder.chkRealizada.setEnabled(true);
+            holder.chkRealizada.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                // Aquí puedes agregar lógica para marcarla como realizada, si quieres
+                tarea.setRealizada(isChecked);  // Solo permite marcarla
+                notifyItemChanged(position);
+            });
+        }
+
         holder.itemView.setOnClickListener(v -> {
             if (clickListener != null) {
                 clickListener.onTareaClick(tarea);
             }
         });
 
-        // Clic largo (menú contextual)
         holder.itemView.setOnLongClickListener(v -> {
             if (longClickListener != null) {
                 longClickListener.onTareaLongClick(v, tarea);
@@ -79,7 +92,6 @@ public class AdaptadorTareas extends RecyclerView.Adapter<AdaptadorTareas.ViewHo
         return listaTareas.size();
     }
 
-    // ViewHolder interno
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtTitulo, txtDescripcion, txtGrupo, txtFechaLimite;
         TextView txtHoraRecordatorio, txtRepetirDiariamente;

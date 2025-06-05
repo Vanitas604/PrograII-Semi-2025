@@ -17,6 +17,17 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Verificar sesión activa
+        boolean logueado = getSharedPreferences("sesion", MODE_PRIVATE)
+                .getBoolean("logueado", false);
+        if (logueado) {
+            // Si ya está logueado, ir directo a MainActivity
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_login);
 
         txtUsuario = findViewById(R.id.txtUsuario);
@@ -36,6 +47,12 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             if (dbHelper.validarUsuario(usuario, contrasena)) {
+                // Guardar estado de sesión activo
+                getSharedPreferences("sesion", MODE_PRIVATE)
+                        .edit()
+                        .putBoolean("logueado", true)
+                        .apply();
+
                 Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
                 irAMain();
             } else {
@@ -53,5 +70,4 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
-
 }

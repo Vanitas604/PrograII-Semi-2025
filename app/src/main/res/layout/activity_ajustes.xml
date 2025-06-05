@@ -79,4 +79,17 @@
         android:background="@color/aqua_oscuro"
         android:textColor="@android:color/black"
         android:padding="12dp" />
+
+    <!-- Botón para cerrar sesión -->
+    <Button
+        android:id="@+id/btnCerrarSesion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cerrar Sesión"
+        android:layout_below="@id/btnGuardarAjustes"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/holo_red_dark"
+        android:textColor="@android:color/white"
+        android:padding="12dp" />
+
 </RelativeLayout>

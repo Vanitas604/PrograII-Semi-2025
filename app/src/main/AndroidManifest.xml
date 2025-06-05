@@ -27,9 +27,6 @@
         <activity android:name=".TareasPorGrupo" />
         <activity android:name=".TareasPendientes" />
         <activity android:name=".TareasRealizadas" />
-
-
-
         <!-- Nueva actividad Ajustes -->
         <activity android:name=".AjustesActivity" />
 

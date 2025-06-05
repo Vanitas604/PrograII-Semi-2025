@@ -1,5 +1,7 @@
 package com.example.proyectofinal;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
@@ -17,10 +19,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -99,12 +101,10 @@ public class MainActivity extends AppCompatActivity {
         spinnerFiltro.setAdapter(adapter);
     }
 
-
     private void aplicarFiltro(int pos) {
         // Como solo hay 2 opciones, pos 0 = Pendientes (realizada = 0), pos 1 = Realizadas (realizada = 1)
         cargarTareas(pos, null);
     }
-
 
     private void cargarTareas(int filtroRealizada, String grupoFiltroIgnorado) {
         listaTareas.clear();
@@ -133,10 +133,9 @@ public class MainActivity extends AppCompatActivity {
         selectedTarea = null;
     }
 
-
     private void mostrarMenuFlotante(View vista, Tareas tarea) {
         selectedTarea = tarea;
-        androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(this, vista);
+        PopupMenu popup = new PopupMenu(this, vista);
         popup.getMenuInflater().inflate(R.menu.menu_tarea_contextual, popup.getMenu());
         popup.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.mnxModificar) {
@@ -146,6 +145,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             } else if (item.getItemId() == R.id.mnxEliminar) {
                 showDeleteConfirmationDialog(tarea);
+                return true;
+            } else if (item.getItemId() == R.id.mnxAjustes) {
+                Intent intent = new Intent(MainActivity.this, AjustesActivity.class);
+                startActivity(intent);
                 return true;
             }
             return false;
@@ -197,12 +200,13 @@ public class MainActivity extends AppCompatActivity {
                 .notify((int) System.currentTimeMillis(), builder.build());
     }
 
-    @Override protected void onResume() {
+    @Override
+    protected void onResume() {
         super.onResume();
         aplicarFiltro(spinnerFiltro.getSelectedItemPosition());
     }
 
-    // Este menú de opciones solo se requiere si tienes más acciones en la toolbar
+    // Menú toolbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -211,7 +215,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Opcional: podrías limpiar este bloque si ya no usas opciones como "Modificar", etc.
+        if (item.getItemId() == R.id.mnxAjustes) {
+            Intent intent = new Intent(MainActivity.this, AjustesActivity.class);
+            startActivity(intent);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }
