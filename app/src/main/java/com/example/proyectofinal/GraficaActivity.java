@@ -70,5 +70,3 @@ public class GraficaActivity extends AppCompatActivity {
         pieChart.invalidate(); // Redibujar
     }
 }
-
-

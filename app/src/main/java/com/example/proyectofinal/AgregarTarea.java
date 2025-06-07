@@ -53,16 +53,30 @@ public class AgregarTarea extends AppCompatActivity {
     private void mostrarDatePicker(EditText campo) {
         final Calendar c = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (view, year, month, dayOfMonth) -> campo.setText(String.format("%02d/%02d/%04d", dayOfMonth, month + 1, year)),
+                (view, year, month, dayOfMonth) ->
+                        campo.setText(String.format("%02d/%02d/%04d", dayOfMonth, month + 1, year)),
                 c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
     }
 
     private void mostrarTimePicker(EditText campo) {
         final Calendar c = Calendar.getInstance();
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        int minute = c.get(Calendar.MINUTE);
+
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                (view, hourOfDay, minute) -> campo.setText(String.format("%02d:%02d", hourOfDay, minute)),
-                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
+                (view, hourOfDay, selectedMinute) -> {
+                    Calendar selectedTime = Calendar.getInstance();
+                    selectedTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    selectedTime.set(Calendar.MINUTE, selectedMinute);
+
+                    // Mostrar hora en formato 12h con AM/PM
+                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                    String formattedTime = sdf.format(selectedTime.getTime());
+                    campo.setText(formattedTime);
+                },
+                hour, minute, false // false = formato de 12 horas
+        );
         timePickerDialog.show();
     }
 
@@ -123,7 +137,7 @@ public class AgregarTarea extends AppCompatActivity {
 
     private void programarNotificacion(Context context, String fecha, String hora) {
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault());
             Date fechaHora = sdf.parse(fecha + " " + hora);
 
             if (fechaHora != null && fechaHora.after(new Date())) {

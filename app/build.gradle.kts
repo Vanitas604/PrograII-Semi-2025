@@ -25,6 +25,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -38,11 +39,8 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.androidx.cardview)
 
-    dependencies {
-        implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    }
-
-
+    // Librería para gráficas
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

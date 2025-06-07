@@ -1,12 +1,15 @@
 package com.example.proyectofinal;
 
-
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.Toast;
+import android.app.PendingIntent;
+import android.content.Context;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -43,6 +46,12 @@ public class AjustesActivity extends AppCompatActivity {
 
             guardarAjustes(notificacionesActivadas, temaOscuroActivo, recordatorioAutomatico, chatsActivados, idiomaEspanol);
 
+            if (recordatorioAutomatico) {
+                programarRecordatorio();
+            } else {
+                cancelarRecordatorio();
+            }
+
             String mensaje = "Ajustes guardados:\n" +
                     "Notificaciones: " + (notificacionesActivadas ? "Activadas" : "Desactivadas") + "\n" +
                     "Tema Oscuro: " + (temaOscuroActivo ? "Activo" : "Inactivo") + "\n" +
@@ -55,13 +64,11 @@ public class AjustesActivity extends AppCompatActivity {
 
         // Botón cerrar sesión
         btnCerrarSesion.setOnClickListener(v -> {
-            // Limpiar datos de sesión (opcional)
             SharedPreferences prefsSesion = getSharedPreferences("sesion", MODE_PRIVATE);
             SharedPreferences.Editor editorSesion = prefsSesion.edit();
             editorSesion.clear();
             editorSesion.apply();
 
-            // Redirigir a LoginActivity y limpiar stack para no volver atrás
             Intent intent = new Intent(AjustesActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -86,6 +93,27 @@ public class AjustesActivity extends AppCompatActivity {
         switchTemaOscuro.setChecked(prefs.getBoolean("TemaOscuro", false));
         switchRecordatorios.setChecked(prefs.getBoolean("Recordatorios", false));
         switchChats.setChecked(prefs.getBoolean("Chats", false));
-        switchIdioma.setChecked(prefs.getBoolean("Idioma", true)); // Español activado por defecto
+        switchIdioma.setChecked(prefs.getBoolean("Idioma", true)); // Español por defecto
+    }
+
+    private void programarRecordatorio() {
+        Intent intent = new Intent(this, ReminderReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        long tiempoAlarma = System.currentTimeMillis() + 60000; // 1 minuto desde ahora para prueba
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, tiempoAlarma, pendingIntent);
+
+        Toast.makeText(this, "Recordatorio programado en 1 minuto", Toast.LENGTH_SHORT).show();
+    }
+
+    private void cancelarRecordatorio() {
+        Intent intent = new Intent(this, ReminderReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+
+        Toast.makeText(this, "Recordatorio cancelado", Toast.LENGTH_SHORT).show();
     }
 }
