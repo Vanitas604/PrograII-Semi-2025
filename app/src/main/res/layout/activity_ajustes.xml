@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@color/white"> <!-- Morado oscuro -->
+    android:background="@color/white">
 
     <!-- Título de la pantalla -->
     <TextView
@@ -15,8 +15,7 @@
         android:textColor="@color/black"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        />
+        android:layout_marginTop="16dp" />
 
     <!-- Switch para activar/desactivar notificaciones -->
     <Switch
@@ -48,25 +47,26 @@
         android:layout_below="@id/switchTemaOscuro"
         android:layout_marginTop="16dp" />
 
-    <!-- Switch para activar/desactivar opciones de Chats -->
-    <Switch
-        android:id="@+id/switchChats"
+    <!-- Spinner para selección de idioma -->
+    <Spinner
+        android:id="@+id/spinnerIdioma"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Activar opciones de Chats"
-        android:textColor="@color/black"
         android:layout_below="@id/switchRecordatorios"
         android:layout_marginTop="32dp" />
 
-    <!-- Switch para activar/desactivar idioma -->
-    <Switch
-        android:id="@+id/switchIdioma"
+    <!-- Botón para ir a Chat con Usuarios -->
+    <Button
+        android:id="@+id/btnChatUsuarios"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Idioma: Español (Activado)"
-        android:textColor="@color/black"
-        android:layout_below="@id/switchChats"
-        android:layout_marginTop="16dp" />
+        android:text="Chat con Usuarios"
+        android:textSize="16sp"
+        android:layout_below="@id/spinnerIdioma"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/aqua_oscuro"
+        android:textColor="@android:color/white"
+        android:padding="12dp" />
 
     <!-- Botón para guardar los ajustes -->
     <Button
@@ -74,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Guardar Ajustes"
-        android:layout_below="@id/switchIdioma"
+        android:layout_below="@id/btnChatUsuarios"
         android:layout_marginTop="32dp"
         android:background="@color/aqua_oscuro"
         android:textColor="@android:color/black"

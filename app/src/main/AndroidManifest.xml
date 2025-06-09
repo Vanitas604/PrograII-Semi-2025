@@ -30,6 +30,8 @@
         <activity android:name=".TareasRealizadas" />
         <activity android:name=".AjustesActivity" />
         <activity android:name=".GraficaActivity" />
+        <activity android:name=".ChatUsuariosActivity" />
+        <activity android:name=".AgregarContactoActivity" />
 
         <!-- LoginActivity como pantalla inicial -->
         <activity android:name=".LoginActivity"
