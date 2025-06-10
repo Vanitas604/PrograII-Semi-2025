@@ -35,6 +35,10 @@ public class ListaContactosActivity extends AppCompatActivity {
         while (cursor.moveToNext()) {
             String nombre = cursor.getString(1);
             String apellido = cursor.getString(2);
+            String correo = cursor.getString(3);
+            String apodo = cursor.getString(4);
+            // Asumimos que el tipo es una cadena, puede ser "Privada" o "Persona"
+
             String tipo = cursor.getString(5);
 
             String nombreCompleto = nombre + " " + apellido;

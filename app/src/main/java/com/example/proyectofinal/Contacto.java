@@ -7,6 +7,7 @@ public class Contacto {
     private String apodo;
     private String tipo;
 
+
     public Contacto(int id, String nombre, String apellido, String correo, String apodo, String tipo) {
         this.id = id;
         this.nombre = nombre;

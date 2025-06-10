@@ -61,6 +61,10 @@ public class Lista_Grupos extends AppCompatActivity {
         findViewById(R.id.btnAgregarGrupo).setOnClickListener(view -> mostrarDialogoAgregar());
     }
 
+
+
+
+
     private void cargarGrupos() {
         listaGrupos.clear();
         try (Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
