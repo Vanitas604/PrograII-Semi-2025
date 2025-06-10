@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Botón atrás -->
+    <ImageView
+        android:id="@+id/imgAtras"
+        android:layout_margin="10dp"
+        android:background="@drawable/atras"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- Nombre del contacto -->
+    <TextView
+        android:id="@+id/lblToChats"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="60dp"
+        android:text="Mi amigo..."
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- Lista de mensajes -->
+    <ListView
+        android:id="@+id/ltsChats"
+        android:background="@drawable/fondo"
+        android:layout_below="@+id/lblToChats"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="60dp"
+        android:divider="@null"
+        android:stackFromBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!-- Campo de mensaje -->
+    <EditText
+        android:id="@+id/txtMsgChats"
+        android:layout_alignParentBottom="true"
+        android:hint="Escribe tu Mensaje..."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="60dp"/>
+
+    <!-- Botón enviar -->
+    <Button
+        android:id="@+id/btnEnviarMsg"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:icon="@drawable/enviar"/>
+</RelativeLayout>

@@ -33,6 +33,8 @@
         <activity android:name=".ChatUsuariosActivity" />
         <activity android:name=".AgregarContactoActivity" />
         <activity android:name=".ListaContactosActivity" />
+        <activity android:name=".Chats" />
+
 
 
         <!-- LoginActivity como pantalla inicial -->

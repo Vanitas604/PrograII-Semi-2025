@@ -1,8 +1,10 @@
 package com.example.proyectofinal;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 public class ListaContactosActivity extends AppCompatActivity {
 
     ListView listViewContactos;
+    ArrayList<String> lista;
+    ArrayList<String> nombresCompletos; // Lista paralela para guardar los nombres completos reales
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +25,9 @@ public class ListaContactosActivity extends AppCompatActivity {
 
         listViewContactos = findViewById(R.id.listViewContactos);
 
-        ArrayList<String> lista = new ArrayList<>();
+        lista = new ArrayList<>();
+        nombresCompletos = new ArrayList<>();
+
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM contactos", null);
@@ -30,7 +36,12 @@ public class ListaContactosActivity extends AppCompatActivity {
             String nombre = cursor.getString(1);
             String apellido = cursor.getString(2);
             String tipo = cursor.getString(5);
-            lista.add(nombre + " " + apellido + " (" + tipo + ")");
+
+            String nombreCompleto = nombre + " " + apellido;
+            String mostrarEnLista = nombreCompleto + " (" + tipo + ")";
+
+            lista.add(mostrarEnLista);
+            nombresCompletos.add(nombreCompleto); // Guardamos solo el nombre para pasar a Chats
         }
 
         cursor.close();
@@ -38,5 +49,16 @@ public class ListaContactosActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lista);
         listViewContactos.setAdapter(adapter);
+
+        // Agregamos el clic para ir al chat
+        listViewContactos.setOnItemClickListener((AdapterView<?> parent, android.view.View view, int position, long id) -> {
+            String nombreSeleccionado = nombresCompletos.get(position);
+
+            Intent intent = new Intent(ListaContactosActivity.this, Chats.class);
+            intent.putExtra("nombre", nombreSeleccionado);
+            intent.putExtra("a", "");      // Puedes pasar algún ID o valor adicional si lo necesitas
+            intent.putExtra("from", "lista");  // Etiqueta para saber de dónde vino
+            startActivity(intent);
+        });
     }
 }
