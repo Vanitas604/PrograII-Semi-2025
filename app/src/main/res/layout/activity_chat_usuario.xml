@@ -1,69 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutChatUsuarios"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#F5F5F5"
     tools:context=".ChatUsuariosActivity">
 
-    <!-- Toolbar -->
+    <!-- Contenido principal -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#D9C2F2"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtTituloChat"
+        <!-- Barra superior -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Chats con Usuarios"
-            android:textSize="24sp"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
+            android:background="#D9C2F2"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/txtTituloChat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chats con Usuarios"
+                android:textSize="24sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Botones horizontales -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/btnAgregarContacto"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Agregar Contacto"
+                android:backgroundTint="#D9C2F2"
+                android:textColor="#000000" />
+        </LinearLayout>
+
+        <!-- Texto informativo -->
+        <TextView
+            android:id="@+id/txtMensaje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Aquí se mostrarán los contactos o el chat."
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:layout_margin="16dp" />
+
     </LinearLayout>
 
-    <!-- Botones -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Botón flotante (FAB) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAbrirContactos"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center"
-        android:weightSum="2">
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_menu_add"
+        android:contentDescription="Abrir Contactos"
+        android:backgroundTint="#25D366" />
 
-        <Button
-            android:id="@+id/btnContacto"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="Contactos"
-            android:backgroundTint="#D9C2F2"
-            android:textColor="#000000" />
-
-        <Button
-            android:id="@+id/btnAgregarContacto"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Agregar Contacto"
-            android:backgroundTint="#D9C2F2"
-            android:textColor="#000000" />
-    </LinearLayout>
-
-    <!-- Texto informativo o espacio para contenido -->
-    <TextView
-        android:id="@+id/txtMensaje"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Aquí se mostrarán los contactos o el chat."
-        android:textSize="16sp"
-        android:textColor="#000000"
-        android:layout_margin="16dp" />
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

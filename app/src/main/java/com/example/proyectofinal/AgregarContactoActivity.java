@@ -1,5 +1,7 @@
 package com.example.proyectofinal;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,17 +53,25 @@ public class AgregarContactoActivity extends AppCompatActivity {
                 return;
             }
 
-            // Mostrar resumen
-            String mensaje = "Contacto agregado:\n" +
-                    "Nombre: " + nombre + " " + apellido + "\n" +
-                    "Tipo: " + tipo + "\n" +
-                    "Correo: " + correo + "\n" +
-                    "Apodo: " + apodo;
+            // Guardar en la base de datos
+            DBHelper dbHelper = new DBHelper(this);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("nombre", nombre);
+            values.put("apellido", apellido);
+            values.put("correo", correo);
+            values.put("apodo", apodo);
+            values.put("tipo", tipo);
 
-            Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
+            long result = db.insert("contactos", null, values);
+            db.close();
 
-            // Cerrar activity
-            finish();
+            if (result != -1) {
+                Toast.makeText(this, "Contacto guardado correctamente", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Error al guardar el contacto", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }
